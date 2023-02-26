@@ -122,12 +122,12 @@ credentials:
           #######
           # User Auth
           #######
-          # - usernamePassword:
-          #     scope: "GLOBAL"
-          #     id: "github-ci-user"
-          #     description: "Github CI ${github-ci-user} Credentials from Vault"
-          #     username: "${github-ci-user}"
-          #     password: "${github-ci-password}"
+          - usernamePassword:
+              scope: "GLOBAL"
+              id: "github-ci-user"
+              description: "Github CI ${github-ci-user} Credentials from Vault"
+              username: "${github-ci-user}"
+              password: "${github-ci-password}"
           ########
           # Tokens
           ########

@@ -28,7 +28,7 @@ RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
 ENV CASC_JENKINS_CONFIG=/var/casc/casc_configs
 COPY jcasc.yaml /var/casc/casc_configs/jcasc.yaml
 
-# ENV CASC_VAULT_FILE="/var/secrets/seed_secrets/jcasc_vault"
+ENV CASC_VAULT_FILE="/var/secrets/seed_secrets/jcasc_vault"
 ENV SECRETS="/var/secrets/seed_secrets"
 COPY secrets /var/secrets/seed_secrets
 
