@@ -1,0 +1,252 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: echo
+  labels:
+    name: echo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-write
+  namespace: echo
+spec:
+  selector:
+    matchLabels:
+      app: echo-write
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: echo-write
+        group: api
+    spec:
+      volumes:
+        - name: echo-pv-storage
+          persistentVolumeClaim:
+            claimName: echo-pv-claim
+      hostname: echo-write-1
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+          - "echo1.local"
+          - "echo2.local"
+      containers:
+      - name: echo1
+        image: gcr.io/google_containers/echoserver:1.10
+        ports:
+        - name: echo1
+          containerPort: 8080
+        volumeMounts:
+          - mountPath: "/data/echo1"
+            name: echo-pv-storage
+        resources:
+          limits:
+            cpu: "0.1"
+            memory: "20Mi"
+          requests:
+            cpu: "0.05"
+            memory: "10Mi"
+      - name: echo2
+        image: gcr.io/google_containers/echoserver:1.10
+        ports:
+        - name: echo2
+          containerPort: 8080
+        volumeMounts:
+          - mountPath: "/data/echo2"
+            name: echo-pv-storage
+        resources:
+          limits:
+            cpu: "0.1"
+            memory: "20Mi"
+          requests:
+            cpu: "0.05"
+            memory: "10Mi"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-read
+  namespace: echo
+spec:
+  selector:
+    matchLabels:
+      app: echo-read
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: echo-read
+        group: api
+    spec:
+      volumes:
+        - name: echo-pv-storage
+          persistentVolumeClaim:
+            claimName: echo-pv-claim-read
+      hostname: echo-read
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+          - "echo.local"
+      containers:
+      - name: echo3
+        image: gcr.io/google_containers/echoserver:1.10
+        ports:
+        - name: echo3
+          containerPort: 8080
+        volumeMounts:
+          - mountPath: "/data/echo3"
+            name: echo-pv-storage
+        resources:
+          limits:
+            cpu: "0.1"
+            memory: "15Mi"
+          requests:
+            cpu: "0.05"
+            memory: "1Mi"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: echo-pv-claim
+  namespace: echo
+spec:
+  storageClassName: hostpath
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: echo-pv-claim-read
+  namespace: echo
+spec:
+  storageClassName: hostpath
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: echo-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: hostpath
+  persistentVolumeReclaimPolicy: Retain
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /opt/data
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: echo-pv-volume-read
+  labels:
+    type: local
+spec:
+  storageClassName: hostpath
+  persistentVolumeReclaimPolicy: Retain
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /opt/data/read
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo-service-write
+  namespace: echo
+spec:
+  ports:
+  - port: 8081
+    targetPort: echo1
+    protocol: TCP
+    name: echo1
+  - port: 8082
+    targetPort: echo2
+    protocol: TCP
+    name: echo2
+  selector:
+    app: echo-write
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo-service-read
+  namespace: echo
+spec:
+  ports:
+  - port: 8080
+    targetPort: echo3
+    protocol: TCP
+    name: echo3
+  selector:
+    app: echo-read
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo-ingress
+  namespace: echo
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  # http://echo-read.localtest.me/echo
+  - host: echo-read.localtest.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: echo-service-read
+            port:
+              number: 8080
+      - path: /echo
+        pathType: Prefix
+        backend:
+          service:
+            name: echo-service-read
+            port:
+              number: 8080
+  # http://echo-write.localtest.me/echo1
+  # http://echo-write.localtest.me/echo2
+  - host: echo-write.localtest.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: echo-service-read
+            port:
+              number: 8080
+      - path: /echo1
+        pathType: Prefix
+        backend:
+          service:
+            name: echo-service-write
+            port:
+              number: 8081
+      - path: /echo2
+        pathType: Prefix  
+        backend:
+          service:
+            name: echo-service-write
+            port:
+              number: 8082
