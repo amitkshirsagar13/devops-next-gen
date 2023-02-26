@@ -1,9 +1,12 @@
 #!/bin/sh
 cat > jenkins-service-account.yaml << EOF
+---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: cicd
+  labels:
+    name: cicd
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -59,5 +62,5 @@ subjects:
 EOF
 kubectl apply -f jenkins-service-account.yaml
 JENKINS_ROBOT=`kubectl -n cicd get serviceaccount jenkins-robot -o go-template --template='{{range .secrets}}{{.name}}{{"\n"}}{{end}}'`
-echo `kubectl -n cicd get secrets $JENKINS_ROBOT -o go-template --template '{{index .data "token"}}' | base64 -d`
+kubectl -n cicd get secrets $JENKINS_ROBOT -o go-template --template '{{index .data "token"}}' | base64 -d > secrets/jenkins-tokens/kubernetes-service-account-secret
 

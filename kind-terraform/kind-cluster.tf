@@ -7,6 +7,11 @@ resource "kind_cluster" "default" {
     kind        = "Cluster"
     api_version = "kind.x-k8s.io/v1alpha4"
 
+    networking {
+      api_server_address  = "127.0.0.1"
+      api_server_port     = 55100
+    }
+    
     node {
       role = "control-plane"
 

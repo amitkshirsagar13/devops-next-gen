@@ -1,0 +1,617 @@
+jenkins:
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
+  slaveAgentPort: 50000
+  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin\n\n"
+  clouds:
+  - kubernetes:
+      containerCap: 10
+      containerCapStr: "10"
+      credentialsId: "LOCAL_JENKINS_KUBE_TOKEN"
+      jenkinsUrl: "http://jenkins-service.cicd.svc"
+      name: "kubernetes"
+      namespace: "cicd"
+      serverUrl: "https://kubernetes.default.svc"
+      skipTlsVerify: true
+      podLabels:
+      - key: "agent"
+        value: "jenkins"
+      templates:
+      - containers:
+        - name: "jnlp"
+          args: ""
+          command: ""
+          image: "amitkshirsagar13/devops-jenkins-agent-generic:latest"
+          livenessProbe:
+            failureThreshold: 0
+            initialDelaySeconds: 0
+            periodSeconds: 0
+            successThreshold: 0
+            timeoutSeconds: 0
+          workingDir: "/home/jenkins/agent"
+        label: "generic-kubernetes-slave"
+        name: "generic"
+        namespace: "cicd"
+        podRetention: "never"
+        serviceAccount: "jenkins-robot"
+        volumes:
+        - hostPathVolume:
+            hostPath: "/var/run/docker.sock"
+            mountPath: "/var/run/docker.sock"
+        yamlMergeStrategy: "override"
+      - containers:
+        - name: "jnlp"
+          args: ""
+          command: ""
+          image: "amitkshirsagar13/devops-jenkins-agent-maven:latest"
+          livenessProbe:
+            failureThreshold: 0
+            initialDelaySeconds: 0
+            periodSeconds: 0
+            successThreshold: 0
+            timeoutSeconds: 0
+          workingDir: "/home/jenkins/agent"
+        label: "maven-kubernetes-slave"
+        name: "maven"
+        namespace: "cicd"
+        podRetention: "never"
+        serviceAccount: "jenkins-robot"
+        volumes:
+        - hostPathVolume:
+            hostPath: "/var/run/docker.sock"
+            mountPath: "/var/run/docker.sock"
+        yamlMergeStrategy: "override"
+      - containers:
+        - name: "jnlp"
+          args: ""
+          command: ""
+          image: "amitkshirsagar13/devops-jenkins-agent-terraform:latest"
+          livenessProbe:
+            failureThreshold: 0
+            initialDelaySeconds: 0
+            periodSeconds: 0
+            successThreshold: 0
+            timeoutSeconds: 0
+          workingDir: "/home/jenkins/agent"
+        label: "terraform-kubernetes-slave"
+        name: "terraform"
+        namespace: "cicd"
+        podRetention: "never"
+        serviceAccount: "jenkins-robot"
+        volumes:
+        - hostPathVolume:
+            hostPath: "/var/run/docker.sock"
+            mountPath: "/var/run/docker.sock"
+        yamlMergeStrategy: "override"
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "admin"
+          properties:
+          - mailer:
+              emailAddress: "amitkshirsagar13@gmail.com"
+        - id: "dev"
+          password: "dev"
+          properties:
+          - mailer:
+              emailAddress: "poonamkshirsagar13@gmail.com"
+        - id: "devops"
+          password: "devops"
+          properties:
+          - mailer:
+              emailAddress: "amoghkshirsagar13@gmail.com"
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Job/Build:dev"
+        - "Job/Cancel:dev"
+        - "Job/Read:dev"
+        - "Job/Workspace:dev"
+        - "Overall/Administer:admin"
+        - "Overall/Read:authenticated"
+        # - "Run/Replay:dev"
+        # - "Run/Update:dev"
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          #######
+          # User Auth
+          #######
+          # - usernamePassword:
+          #     scope: "GLOBAL"
+          #     id: "github-ci-user"
+          #     description: "Github CI ${github-ci-user} Credentials from Vault"
+          #     username: "${github-ci-user}"
+          #     password: "${github-ci-password}"
+          ########
+          # Tokens
+          ########
+          - string:
+              scope: "GLOBAL"
+              id: "LOCAL_KUBE_HOST"
+              description: "LOCAL_KUBE_HOST"
+              secret: "https://kubernetes.default.svc"
+          - string:
+              scope: "GLOBAL"
+              id: "LOCAL_JENKINS_KUBE_TOKEN"
+              description: "LOCAL_JENKINS_KUBE_TOKEN"
+              secret: "${jenkins-tokens/kubernetes-service-account-secret}"
+          - string:
+              scope: "GLOBAL"
+              id: "github-ci-token"
+              description: "Github CI Global Token ${jenkins-tokens/github-ci-token} from File"
+              secret: "${jenkins-tokens/github-ci-token}"
+          - string:
+              scope: "GLOBAL"
+              id: "LOCAL_AWS_ACCESS_KEY_ID"
+              description: "LOCAL_AWS_ACCESS_KEY_ID"
+              secret: "jenkins-fake-access-key"
+          - string:
+              scope: "GLOBAL"
+              id: "LOCAL_AWS_SECRET_ACCESS_KEY"
+              description: "LOCAL_AWS_SECRET_ACCESS_KEY"
+              secret: "jenkins-fake-secret-key"
+          - string:
+              scope: "GLOBAL"
+              id: "LIVE_AWS_ACCESS_KEY_ID"
+              description: "LIVE_AWS_ACCESS_KEY_ID"
+              secret: "jenkins-fake-access-key"
+          - string:
+              scope: "GLOBAL"
+              id: "LIVE_AWS_SECRET_ACCESS_KEY"
+              description: "LIVE_AWS_SECRET_ACCESS_KEY"
+              secret: "jenkins-fake-secret-key"
+          - string:
+              scope: "GLOBAL"
+              id: "LIVE_JENKINS_KUBE_TOKEN"
+              description: "LIVE_JENKINS_KUBE_TOKEN"
+              secret: "jenkins-fake-secret-key"
+          - string:
+              scope: "GLOBAL"
+              id: "INT_AWS_ACCESS_KEY_ID"
+              description: "INT_AWS_ACCESS_KEY_ID"
+              secret: "jenkins-fake-access-key"
+          - string:
+              scope: "GLOBAL"
+              id: "INT_AWS_SECRET_ACCESS_KEY"
+              description: "INT_AWS_SECRET_ACCESS_KEY"
+              secret: "jenkins-fake-secret-key"
+          - string:
+              scope: "GLOBAL"
+              id: "INT_JENKINS_KUBE_TOKEN"
+              description: "INT_JENKINS_KUBE_TOKEN"
+              secret: "jenkins-fake-secret-key"
+          - string:
+              scope: "GLOBAL"
+              id: "STG_AWS_ACCESS_KEY_ID"
+              description: "STG_AWS_ACCESS_KEY_ID"
+              secret: "jenkins-fake-access-key"
+          - string:
+              scope: "GLOBAL"
+              id: "STG_AWS_SECRET_ACCESS_KEY"
+              description: "STG_AWS_SECRET_ACCESS_KEY"
+              secret: "jenkins-fake-secret-key"
+          - string:
+              scope: "GLOBAL"
+              id: "STG_JENKINS_KUBE_TOKEN"
+              description: "STG_JENKINS_KUBE_TOKEN"
+              secret: "jenkins-fake-secret-key"
+          - string:
+              scope: "GLOBAL"
+              id: "E2E_AWS_ACCESS_KEY_ID"
+              description: "E2E_AWS_ACCESS_KEY_ID"
+              secret: "jenkins-fake-access-key"
+          - string:
+              scope: "GLOBAL"
+              id: "E2E_AWS_SECRET_ACCESS_KEY"
+              description: "E2E_AWS_SECRET_ACCESS_KEY"
+              secret: "jenkins-fake-secret-key"
+          - string:
+              scope: "GLOBAL"
+              id: "E2E_JENKINS_KUBE_TOKEN"
+              description: "E2E_JENKINS_KUBE_TOKEN"
+              secret: "jenkins-fake-secret-key"
+
+
+
+          ########
+          # SSH Keys
+          ########
+          # - basicSSHUserPrivateKey:
+          #     scope: "GLOBAL"
+          #     id: "deploy-key-shared-library"
+          #     username: "root"
+          #     passphrase: ""
+          #     description: "Deploy key for global shared library"
+          #     privateKeySource:
+          #       directEntry:
+          #         privateKey: "${jenkins-ssh-keys/deploy-key-shared-library}"
+          # - basicSSHUserPrivateKey:
+          #     scope: "GLOBAL"
+          #     id: "ssh-agent-access-key"
+          #     username: "ubuntu"
+          #     passphrase: ""
+          #     description: "SSH key to access agents"
+          #     privateKeySource:
+          #       directEntry:
+          #         privateKey: "${jenkins-ssh-keys/ssh-agent-access-key}"
+
+tool:
+  jdk:
+    installations:
+      # - name: "open-jdk8"
+      #   properties:
+      #     - installSource:
+      #         installers:
+      #           - adoptOpenJdkInstaller:
+      #               id: "jdk8u232-b09"
+      - name: "jdk8"
+        properties:
+          - installSource:
+              installers:
+                - jdkInstaller:
+                    acceptLicense: true
+                    id: "jdk-8u221-oth-JPR"
+  maven: # (1)
+    installations:
+    - name: "maven"
+      properties:
+      - installSource:
+          installers:
+          - maven:
+              id: "3.8.2"
+  # dockerTool:
+  #   installations:
+  #   - name: "docker"
+  #     properties:
+  #     - installSource:
+  #         installers:
+  #         - fromDocker:
+  #             version: "latest"
+  # terraform:
+  #   installations:
+  #   - name: "terraform"
+  #     properties:
+  #     - installSource:
+  #         installers:
+  #         - terraformInstaller:
+  #             id: "1.1.0-linux-amd64"
+  git:
+    installations:
+    - home: "git"
+      name: "Default"
+unclassified:
+  globalLibraries:
+    libraries:
+      - name: "devops-ci-lib"
+        retriever:
+          modernSCM:
+            scm:
+              git:
+                remote: "git@github.com:amitkshirsagar13/base-pipeline.git"
+                credentialsId: "github-ci-user"
+  templateGlobalConfig:
+    tier:
+      configurationProvider: "null"
+      librarySources:
+      - libraryProvider:
+          scm:
+            baseDir: "libraries"
+            scm:
+              git:
+                branches:
+                - name: "*/main"
+                buildChooser: "default"
+                userRemoteConfigs:
+                - credentialsId: "github-ci-user"
+                  url: "https://github.com/amitkshirsagar13/devops.git"
+
+jobs:
+  - script: |
+      multibranchPipelineJob('sample-service') {
+        branchSources {
+          git {
+            id = 'sample-service'
+            remoteName = 'origin'
+            remote('https://github.com/amitkshirsagar13/sample-service.git')
+            includes('feature*')
+            excludes('')
+          }
+        }
+      }
+      
+      pipelineJob('kubernetes-connectivity-test') {
+        description("Test Kubernetes connectivity and setup")
+        definition {
+          cps {
+            script('''
+                pipeline {
+                  agent { label 'generic-kubernetes-slave' }
+                  parameters {
+                    choice(name: 'Level', choices: ['local','int','stg','e2e','live'], description: 'Cluster level')
+                    choice(name: 'Namespaces', choices: ['apps','echo','kube-system'], description: 'Cluster Namespaces to list pods')
+                  }
+                  environment {
+                    ENVKEY = "$Level".toUpperCase()
+                    KUBEHOST = "$ENVKEY" + "_KUBE_HOST"
+                    KUBETOKEN = "$ENVKEY" + "_JENKINS_KUBE_TOKEN"
+                  }
+                  stages {
+                    stage('List pods') {
+                      steps {
+                        sh "echo $ENVKEY $KUBEHOST $KUBETOKEN"
+                        withCredentials([string(credentialsId: "$KUBEHOST", variable: 'KUBE_HOST'),
+                                          string(credentialsId: "$KUBETOKEN", variable: 'KUBE_TOKEN')]) {
+                          withKubeConfig([credentialsId: "$KUBETOKEN",
+                                          serverUrl: "$KUBE_HOST",
+                                          namespace: 'echo'
+                                          ]) {
+                            sh 'kubectl get pods'
+                          }
+                          withKubeConfig([credentialsId: "$KUBETOKEN",
+                                          serverUrl: "$KUBE_HOST",
+                                          namespace: 'kube-system'
+                                          ]) {
+                            sh 'kubectl get pods'
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+            '''.stripIndent())
+            sandbox()
+          }
+        }
+      }
+      
+      pipelineJob('generic-kubernetes-slave-test') {
+        description("Need to have defined kubernetes cloud plugin with label generic-kubernetes-slave agent")
+        definition {
+          cps {
+            script('''
+              agentName = "generic-kubernetes-slave"
+              agentLabel = "${println 'Right Now the Agent Name is ' + agentName; return agentName}"
+
+              pipeline {
+                agent { label 'generic-kubernetes-slave' }
+                parameters {
+                  choice(name: 'ErrorBuild', choices: ['no','yes'], description: 'Error Build to test pipeline')
+                }
+                environment {
+                  ERRORBUILD = "$ErrorBuild".toUpperCase()
+                }
+                stages {
+                  stage('Location') {
+                    agent { label 'maven-kubernetes-slave' }
+                    steps {
+                      sh """
+                        hostname
+                        pwd
+                        whoami
+                        mvn -v
+                        ls -ltra /home/jenkins
+                      """
+                    }
+                  }
+                  stage('Checking') {
+                    steps {
+                      script {
+                        agentName = "generic-kubernetes-slave"
+                        println agentLabel
+                        println agentName
+                      }
+                    }
+                  }
+                  stage('Run Tests') {
+                    parallel ({
+                      stage('Test On Windows') {
+                        agent {
+                          label agentName
+                        }
+                        steps {
+                          sh "sleep 2m"
+                        }
+                      }
+                      stage('Test On Linux') {
+                        agent {
+                          label agentName
+                        }
+                        steps {
+                          sh "sleep 1m"
+                        }
+                      }
+                      stage('Test On Mac') {
+                        agent {
+                          label agentName
+                        }
+                        steps {
+                          script {
+                            sh """
+                              sleep 90
+                            """
+                            errorBuild = env.ErrorBuild
+                            if(errorBuild == 'yes') {
+                              error 'Error in group2 processing'
+                            }
+                          }
+                        }
+                      }
+                    }, failFast: true)
+                  }
+                  stage('Final') {
+                    agent { label agentLabel }
+                    steps {
+                      script {
+                        println agentLabel
+                        println agentName
+                      }
+                    }
+                  }
+                }
+              }
+            '''.stripIndent())
+            sandbox()
+          }
+        }
+      }
+
+      pipelineJob('jte-demo-scripted') {
+        def repo = 'https://github.com/amitkshirsagar13/sample-service.git'
+        description("Pipeline for jte-scripted")
+        displayName("Sample-Service-jte-scripted")
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url(repo)
+                  credentials('github-ci-user')
+                }
+                branches('master', '**/feature*')
+                scriptPath('Jenkinsfile.jte-scripted')
+                extensions { }  // required as otherwise it may try to tag the repo, which you may not want
+              }
+            }
+          }
+        }
+      }
+
+      pipelineJob('jte-demo-declarative') {
+        def repo = 'https://github.com/amitkshirsagar13/sample-service.git'
+        description("Pipeline for jte-declarative")
+        displayName("Sample-Service-jte-declarative")
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url(repo)
+                  credentials('github-ci-user')
+                }
+                branches('main', '**/feature*')
+                scriptPath('Jenkinsfile.jte-declarative')
+                extensions { }  // required as otherwise it may try to tag the repo, which you may not want
+              }
+            }
+          }
+        }
+      }
+
+      pipelineJob('terraform-bastion') {
+        def repo = 'https://github.com/amitkshirsagar13/devops.git'
+        description("Pipeline for Terraform Bastion Demo")
+        displayName("Terraform Bastion")
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url(repo)
+                  credentials('github-ci-user')
+                }
+                branches('main', '**/feature*')
+                scriptPath('cicd/pipeline/aws/bastion/bastion.pipeline')
+                extensions { }  // required as otherwise it may try to tag the repo, which you may not want
+              }
+            }
+          }
+        }
+      }
+
+      pipelineJob('terraform-s3') {
+        def repo = 'https://github.com/amitkshirsagar13/devops.git'
+        description("Pipeline for Terraform S3 Demo")
+        displayName("Terraform S3 Demo")
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url(repo)
+                  credentials('github-ci-user')
+                }
+                branches('main', '**/feature*')
+                scriptPath('cicd/pipeline/aws/s3/terraform.pipeline')
+                extensions { }  // required as otherwise it may try to tag the repo, which you may not want
+              }
+            }
+          }
+        }
+      }
+
+      pipelineJob('terraform-live') {
+        def repo = 'https://github.com/amitkshirsagar13/devops.git'
+        description("Terraform Environment")
+        displayName("Terraform Environment")
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url(repo)
+                  credentials('github-ci-user')
+                }
+                branches('main', '**/feature*')
+                scriptPath('terragrunt/aws/terraform.pipeline')
+                extensions { }  // required as otherwise it may try to tag the repo, which you may not want
+              }
+            }
+          }
+        }
+      }
+
+  # pipelineJob('agent-pod-connectivity-test') {
+  #   description("Test Kubernetes agent pod connectivity")
+  #   definition {
+  #     cps {
+  #       script('''
+  #           pipeline {
+  #             agent {
+  #               kubernetes {
+  #                 yaml '''
+  #                   apiVersion: v1
+  #                   kind: Pod
+  #                   spec:
+  #                     containers:
+  #                     - name: maven
+  #                       image: maven:alpine
+  #                       command:
+  #                       - cat
+  #                       tty: true
+  #                     - name: node
+  #                       image: node:16-alpine3.12
+  #                       command:
+  #                       - cat
+  #                       tty: true
+  #                   '''
+  #               }
+  #             }
+  #             stages {
+  #               stage('Run maven') {
+  #                 steps {
+  #                   container('maven') {
+  #                     sh 'mvn -version'
+  #                     sh ' echo Hello World > hello.txt'
+  #                     sh 'ls -last'
+  #                   }
+  #                   container('node') {
+  #                     sh 'npm version'
+  #                     sh 'cat hello.txt'
+  #                     sh 'ls -last'
+  #                   }
+  #                 }
+  #               }
+  #             }
+  #           }
+  #       '''.stripIndent())
+  #       sandbox()
+  #     }
+  #   }
+  # }
+  

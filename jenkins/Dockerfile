@@ -25,14 +25,12 @@ RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
 
 
 # Add JCasC
-# ENV CASC_JENKINS_CONFIG=/var/casc/casc_configs
-# COPY jcasc.yaml /var/casc/casc_configs/jcasc.yaml
+ENV CASC_JENKINS_CONFIG=/var/casc/casc_configs
+COPY jcasc.yaml /var/casc/casc_configs/jcasc.yaml
 
-# RUN apt-get update && apt-get install -y maven
-
-# ENV SECRETS="/var/secrets/seed_secrets"
 # ENV CASC_VAULT_FILE="/var/secrets/seed_secrets/jcasc_vault"
-# COPY secrets /var/secrets/seed_secrets
+ENV SECRETS="/var/secrets/seed_secrets"
+COPY secrets /var/secrets/seed_secrets
 
 # RUN addgroup --gid 2222 --system docker
 # RUN usermod -aG docker 
