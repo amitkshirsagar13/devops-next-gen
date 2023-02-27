@@ -5,3 +5,4 @@ terraform.tfstate.backup
 
 jenkins-service-account.yaml
 kubernetes-service-account-secret
+vault.txt
