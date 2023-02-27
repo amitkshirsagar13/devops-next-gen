@@ -317,7 +317,7 @@ unclassified:
                   url: "https://github.com/amitkshirsagar13/devops.git"
 
 jobs:
-  - script: |
+  - script: >
       multibranchPipelineJob('sample-service') {
         branchSources {
           git {
@@ -329,7 +329,7 @@ jobs:
           }
         }
       }
-      
+  - script: >
       pipelineJob('kubernetes-connectivity-test') {
         description("Test Kubernetes connectivity and setup")
         definition {
@@ -374,7 +374,7 @@ jobs:
           }
         }
       }
-      
+  - script: >
       pipelineJob('generic-kubernetes-slave-test') {
         description("Need to have defined kubernetes cloud plugin with label generic-kubernetes-slave agent")
         definition {
@@ -465,7 +465,7 @@ jobs:
           }
         }
       }
-
+  - script: >
       pipelineJob('jte-demo-scripted') {
         def repo = 'https://github.com/amitkshirsagar13/sample-service.git'
         description("Pipeline for jte-scripted")
@@ -486,7 +486,7 @@ jobs:
           }
         }
       }
-
+  - script: >
       pipelineJob('jte-demo-declarative') {
         def repo = 'https://github.com/amitkshirsagar13/sample-service.git'
         description("Pipeline for jte-declarative")
@@ -507,7 +507,7 @@ jobs:
           }
         }
       }
-
+  - script: >
       pipelineJob('terraform-bastion') {
         def repo = 'https://github.com/amitkshirsagar13/devops.git'
         description("Pipeline for Terraform Bastion Demo")
@@ -528,7 +528,7 @@ jobs:
           }
         }
       }
-
+  - script: >
       pipelineJob('terraform-s3') {
         def repo = 'https://github.com/amitkshirsagar13/devops.git'
         description("Pipeline for Terraform S3 Demo")
@@ -549,7 +549,7 @@ jobs:
           }
         }
       }
-
+  - script: >
       pipelineJob('terraform-live') {
         def repo = 'https://github.com/amitkshirsagar13/devops.git'
         description("Terraform Environment")
@@ -570,53 +570,3 @@ jobs:
           }
         }
       }
-
-  # pipelineJob('agent-pod-connectivity-test') {
-  #   description("Test Kubernetes agent pod connectivity")
-  #   definition {
-  #     cps {
-  #       script('''
-  #           pipeline {
-  #             agent {
-  #               kubernetes {
-  #                 yaml '''
-  #                   apiVersion: v1
-  #                   kind: Pod
-  #                   spec:
-  #                     containers:
-  #                     - name: maven
-  #                       image: maven:alpine
-  #                       command:
-  #                       - cat
-  #                       tty: true
-  #                     - name: node
-  #                       image: node:16-alpine3.12
-  #                       command:
-  #                       - cat
-  #                       tty: true
-  #                   '''
-  #               }
-  #             }
-  #             stages {
-  #               stage('Run maven') {
-  #                 steps {
-  #                   container('maven') {
-  #                     sh 'mvn -version'
-  #                     sh ' echo Hello World > hello.txt'
-  #                     sh 'ls -last'
-  #                   }
-  #                   container('node') {
-  #                     sh 'npm version'
-  #                     sh 'cat hello.txt'
-  #                     sh 'ls -last'
-  #                   }
-  #                 }
-  #               }
-  #             }
-  #           }
-  #       '''.stripIndent())
-  #       sandbox()
-  #     }
-  #   }
-  # }
-  
