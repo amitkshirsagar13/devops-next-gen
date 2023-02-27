@@ -2,6 +2,7 @@ configuration-as-code:1569.vb_72405b_80249
 kubernetes:3883.v4d70a_a_a_df034
 matrix-auth:3.1.6
 hashicorp-vault-plugin:360.v0a_1c04cf807d
+hashicorp-vault-pipeline:1.4
 mailer:448.v5b_97805e3767
 job-dsl:1.81
 templating-engine:2.5.3

@@ -1,0 +1,56 @@
+Running from: /usr/share/jenkins/jenkins.war
+webroot: /var/jenkins_home/war
+2023-02-27 02:40:51.527+0000 [id=1]	INFO	winstone.Logger#logInternal: Beginning extraction from war file
+2023-02-27 02:40:52.354+0000 [id=1]	WARNING	o.e.j.s.handler.ContextHandler#setContextPath: Empty contextPath
+2023-02-27 02:40:52.452+0000 [id=1]	INFO	org.eclipse.jetty.server.Server#doStart: jetty-10.0.13; built: 2022-12-07T20:13:20.134Z; git: 1c2636ea05c0ca8de1ffd6ca7f3a98ac084c766d; jvm 11.0.18+10
+2023-02-27 02:40:52.961+0000 [id=1]	INFO	o.e.j.w.StandardDescriptorProcessor#visitServlet: NO JSP Support for /, did not find org.eclipse.jetty.jsp.JettyJspServlet
+2023-02-27 02:40:53.115+0000 [id=1]	INFO	o.e.j.s.s.DefaultSessionIdManager#doStart: Session workerName=node0
+2023-02-27 02:40:53.921+0000 [id=1]	INFO	hudson.WebAppMain#contextInitialized: Jenkins home directory: /var/jenkins_home found at: EnvVars.masterEnvVars.get("JENKINS_HOME")
+2023-02-27 02:40:54.148+0000 [id=1]	INFO	o.e.j.s.handler.ContextHandler#doStart: Started w.@43e1692f{Jenkins v2.391,/,file:///var/jenkins_home/war/,AVAILABLE}{/var/jenkins_home/war}
+2023-02-27 02:40:54.220+0000 [id=1]	INFO	o.e.j.server.AbstractConnector#doStart: Started ServerConnector@54d18072{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+2023-02-27 02:40:54.230+0000 [id=1]	INFO	org.eclipse.jetty.server.Server#doStart: Started Server@698122b2{STARTING}[10.0.13,sto=0] @3575ms
+2023-02-27 02:40:54.236+0000 [id=23]	INFO	winstone.Logger#logInternal: Winstone Servlet Engine running: controlPort=disabled
+2023-02-27 02:40:54.651+0000 [id=28]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+2023-02-27 02:40:55.017+0000 [id=29]	INFO	hudson.PluginManager#considerDetachedPlugin: Loading a detached plugin as a dependency: /var/jenkins_home/plugins/javax-mail-api.jpi
+2023-02-27 02:40:55.051+0000 [id=29]	INFO	hudson.PluginManager#considerDetachedPlugin: Loading a detached plugin as a dependency: /var/jenkins_home/plugins/sshd.jpi
+2023-02-27 02:40:57.628+0000 [id=28]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.codehaus.groovy.vmplugin.v7.Java7$1 (file:/var/jenkins_home/war/WEB-INF/lib/groovy-all-2.4.21.jar) to constructor java.lang.invoke.MethodHandles$Lookup(java.lang.Class,int)
+WARNING: Please consider reporting this to the maintainers of org.codehaus.groovy.vmplugin.v7.Java7$1
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2023-02-27 02:41:04.658+0000 [id=28]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+2023-02-27 02:41:04.822+0000 [id=28]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+2023-02-27 02:41:05.533+0000 [id=29]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+2023-02-27 02:41:07.030+0000 [id=28]	INFO	jenkins.InitReactorRunner$1#onAttained: System config loaded
+2023-02-27 02:41:07.562+0000 [id=28]	WARNING	i.j.p.c.SecretSourceResolver$UnresolvedLookup#lookup: Configuration import: Found unresolved variable 'github-ci-user'. Will default to empty string
+2023-02-27 02:41:07.562+0000 [id=28]	WARNING	i.j.p.c.SecretSourceResolver$UnresolvedLookup#lookup: Configuration import: Found unresolved variable 'github-ci-user'. Will default to empty string
+2023-02-27 02:41:07.562+0000 [id=28]	WARNING	i.j.p.c.SecretSourceResolver$UnresolvedLookup#lookup: Configuration import: Found unresolved variable 'github-ci-password'. Will default to empty string
+2023-02-27 02:41:07.632+0000 [id=28]	WARNING	o.j.p.m.AuthorizationContainer#add: Processing a permission assignment in the legacy format (without explicit TYPE prefix): Job/Build:dev
+2023-02-27 02:41:07.634+0000 [id=28]	WARNING	o.j.p.m.AuthorizationContainer#add: Processing a permission assignment in the legacy format (without explicit TYPE prefix): Job/Cancel:dev
+2023-02-27 02:41:07.634+0000 [id=28]	WARNING	o.j.p.m.AuthorizationContainer#add: Processing a permission assignment in the legacy format (without explicit TYPE prefix): Job/Read:dev
+2023-02-27 02:41:07.634+0000 [id=28]	WARNING	o.j.p.m.AuthorizationContainer#add: Processing a permission assignment in the legacy format (without explicit TYPE prefix): Job/Workspace:dev
+2023-02-27 02:41:07.634+0000 [id=28]	WARNING	o.j.p.m.AuthorizationContainer#add: Processing a permission assignment in the legacy format (without explicit TYPE prefix): Overall/Administer:admin
+2023-02-27 02:41:07.634+0000 [id=28]	WARNING	o.j.p.m.AuthorizationContainer#add: Processing a permission assignment in the legacy format (without explicit TYPE prefix): Overall/Read:authenticated
+2023-02-27 02:41:07.644+0000 [id=28]	WARNING	i.j.p.casc.BaseConfigurator#createAttribute: Can't handle class org.csanchez.jenkins.plugins.kubernetes.PodTemplate#listener: type is abstract but not Describable.
+2023-02-27 02:41:07.720+0000 [id=28]	WARNING	i.j.p.casc.BaseConfigurator#createAttribute: Can't handle class org.csanchez.jenkins.plugins.kubernetes.PodTemplate#listener: type is abstract but not Describable.
+2023-02-27 02:41:07.725+0000 [id=28]	WARNING	i.j.p.casc.BaseConfigurator#createAttribute: Can't handle class org.csanchez.jenkins.plugins.kubernetes.PodTemplate#listener: type is abstract but not Describable.
+2023-02-27 02:41:08.651+0000 [id=28]	WARNING	i.j.p.casc.BaseConfigurator#createAttribute: Can't handle class org.boozallen.plugins.jte.init.governance.TemplateGlobalConfig#metaClass: type is abstract but not Describable.
+2023-02-27 02:41:08.745+0000 [id=28]	WARNING	i.j.p.casc.BaseConfigurator#createAttribute: Can't handle class jenkins.plugins.git.GitSCMSource#owner: type is abstract but not Describable.
+2023-02-27 02:41:08.747+0000 [id=28]	WARNING	i.j.p.casc.BaseConfigurator#createAttribute: Can't handle class org.boozallen.plugins.jte.init.governance.TemplateGlobalConfig#metaClass: type is abstract but not Describable.
+2023-02-27 02:41:08.755+0000 [id=28]	WARNING	i.j.p.casc.BaseConfigurator#createAttribute: Can't handle class org.boozallen.plugins.jte.init.governance.GovernanceTier#metaClass: type is abstract but not Describable.
+2023-02-27 02:41:08.820+0000 [id=28]	WARNING	i.j.p.casc.BaseConfigurator#createAttribute: Can't handle class org.boozallen.plugins.jte.init.governance.libs.ScmLibraryProvider#metaClass: type is abstract but not Describable.
+2023-02-27 02:41:08.853+0000 [id=28]	WARNING	i.j.p.casc.BaseConfigurator#createAttribute: Can't handle class org.boozallen.plugins.jte.init.governance.libs.LibrarySource#metaClass: type is abstract but not Describable.
+2023-02-27 02:41:08.854+0000 [id=28]	WARNING	i.j.p.casc.BaseConfigurator#createAttribute: Can't handle class org.boozallen.plugins.jte.init.governance.config.NullPipelineConfigurationProvider#metaClass: type is abstract but not Describable.
+2023-02-27 02:41:08.918+0000 [id=28]	WARNING	i.j.p.c.SecretSourceResolver$UnresolvedLookup#lookup: Configuration import: Found unresolved variable 'github-ci-user'. Will default to empty string
+2023-02-27 02:41:08.918+0000 [id=28]	WARNING	i.j.p.c.SecretSourceResolver$UnresolvedLookup#lookup: Configuration import: Found unresolved variable 'github-ci-user'. Will default to empty string
+2023-02-27 02:41:08.918+0000 [id=28]	WARNING	i.j.p.c.SecretSourceResolver$UnresolvedLookup#lookup: Configuration import: Found unresolved variable 'github-ci-password'. Will default to empty string
+2023-02-27 02:41:08.937+0000 [id=28]	WARNING	o.j.p.m.AuthorizationContainer#add: Processing a permission assignment in the legacy format (without explicit TYPE prefix): Job/Build:dev
+2023-02-27 02:41:08.938+0000 [id=28]	WARNING	o.j.p.m.AuthorizationContainer#add: Processing a permission assignment in the legacy format (without explicit TYPE prefix): Job/Cancel:dev
+2023-02-27 02:41:08.938+0000 [id=28]	WARNING	o.j.p.m.AuthorizationContainer#add: Processing a permission assignment in the legacy format (without explicit TYPE prefix): Job/Read:dev
+2023-02-27 02:41:08.938+0000 [id=28]	WARNING	o.j.p.m.AuthorizationContainer#add: Processing a permission assignment in the legacy format (without explicit TYPE prefix): Job/Workspace:dev
+2023-02-27 02:41:08.938+0000 [id=28]	WARNING	o.j.p.m.AuthorizationContainer#add: Processing a permission assignment in the legacy format (without explicit TYPE prefix): Overall/Administer:admin
+2023-02-27 02:41:08.938+0000 [id=28]	WARNING	o.j.p.m.AuthorizationContainer#add: Processing a permission assignment in the legacy format (without explicit TYPE prefix): Overall/Read:authenticated
+2023-02-27 02:41:08.942+0000 [id=28]	WARNING	i.j.p.casc.BaseConfigurator#createAttribute: Can't handle class org.csanchez.jenkins.plugins.kubernetes.PodTemplate#listener: type is abstract but not Describable.
+2023-02-27 02:41:08.946+0000 [id=28]	WARNING	i.j.p.casc.BaseConfigurator#createAttribute: Can't handle class org.csanchez.jenkins.plugins.kubernetes.PodTemplate#listener: type is abstract but not Describable.
+2023-02-27 02:41:08.949+0000 [id=28]	WARNING	i.j.p.casc.BaseConfigurator#createAttribute: Can't handle class org.csanchez.jenkins.plugins.kubernetes.PodTemplate#listener: type is abstract but not Describable.

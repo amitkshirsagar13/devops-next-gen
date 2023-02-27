@@ -29,3 +29,6 @@ kubeA:
 
 kube ns:
     kubectl get pods,svc,ingress -n {{ns}}
+
+logs ns podName:
+    kubectl logs -n {{ns}} {{podName}} > pod.log

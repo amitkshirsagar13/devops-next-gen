@@ -58,4 +58,7 @@ vault operator init
 vault operator unseal
 
 kubectl -n vault exec -it vault-0 -- vault status
+
+
+kubectl -n vault port-forward svc/vault-ui 8443:8200
 ```

@@ -133,6 +133,11 @@ credentials:
           ########
           - string:
               scope: "GLOBAL"
+              id: "VAULT_ROOT"
+              description: "VAULT_ROOT"
+              secret: "${jenkins-tokens/kubernetes-service-account-secret}"
+          - string:
+              scope: "GLOBAL"
               id: "LOCAL_KUBE_HOST"
               description: "LOCAL_KUBE_HOST"
               secret: "https://kubernetes.default.svc"
