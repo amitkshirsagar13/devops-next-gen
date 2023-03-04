@@ -1,4 +1,6 @@
-## Setup WatchDog
+## Setup Dead Man's Switch
+
+Refer [this](https://blog.ediri.io/how-to-set-up-a-dead-mans-switch-in-prometheus) artical for more details.
 
 ### Bring down Alertmanager and operator
 ```
