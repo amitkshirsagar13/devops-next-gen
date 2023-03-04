@@ -1,6 +1,21 @@
 default:
     @just --list --unsorted
 
+create:
+    #!/usr/bin/env bash
+    cd kind-terraform
+    terraform init
+    ./dev.sh
+
+recreate:
+    #!/usr/bin/env bash
+    cd kind-terraform
+    terraform destroy -auto-approve
+    ./dev.sh
+
+destroy cluster:
+    kind delete  cluster -n dev
+
 build-jenkins:
     docker build -t amitkshirsagar13/devops-jenkins:2.391 ./jenkins
     docker push amitkshirsagar13/devops-jenkins:2.391

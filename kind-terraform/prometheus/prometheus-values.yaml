@@ -8,17 +8,28 @@ alertmanager:
   config:
     receivers:
       - name: 'null'
-      - name: deadman
+      - name: HealthCheck.io
         webhook_configs:
           - url: "https://hc-ping.com/bdc7a25a-f522-4ccc-b801-2ee226e0c03d"
+      - name: DEAD-MAN-SNITCH
+        webhook_configs:
+          - url: "https://nosnch.in/112081fd96"
     route:
       routes:
         - match:
             alertname: Watchdog
-          receiver: deadman
+          receiver: HealthCheck.io
           group_wait: 0s
           group_interval: 1m
           repeat_interval: 50s
+          continue: true
+        - match:
+            alertname: Watchdog
+          receiver: DEAD-MAN-SNITCH
+          group_wait: 0s
+          group_interval: 1m
+          repeat_interval: 50s
+
 prometheus-node-exporter:
   hostRootFsMount:
     enabled: false
