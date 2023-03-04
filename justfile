@@ -18,17 +18,32 @@ start-vault:
     mkdir -p vault/volumes/logs
     ./vault/setup-vault.sh
 
-podsA:
-    kubectl get pods -A
-
-pods ns:
-    kubectl get pods -n {{ns}}
-
 kubeA:
     kubectl get pods,svc,ingress -A
 
 kube ns:
     kubectl get pods,svc,ingress -n {{ns}}
 
-logs ns podName:
-    kubectl logs -n {{ns}} {{podName}} > pod.log
+pgA:
+    kubectl get pods -A
+
+pg ns:
+    kubectl get pods -n {{ns}}
+
+pd ns pod:
+    kubectl describe pods -n {{ns}} {{pod}}
+
+k type ns:
+    kubectl get {{type}} -n {{ns}}
+
+kd type ns item:
+    kubectl describe {{type}} -n {{ns}} {{item}}
+
+logs ns pod:
+    kubectl logs -n {{ns}} {{pod}} | tee pod.log
+
+ksh ns pod:
+    kubectl exec -n {{ns}} -it {{pod}} -- /bin/sh
+
+kbash ns pod:
+    kubectl exec -n {{ns}} -it {{pod}} -- /bin/bash

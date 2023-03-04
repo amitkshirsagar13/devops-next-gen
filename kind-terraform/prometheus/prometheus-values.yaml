@@ -1,0 +1,24 @@
+global:
+  # How frequently to scrape targets
+  scrape_interval:     10s
+  # How frequently to evaluate rules
+  evaluation_interval: 10s
+
+alertmanager:
+  config:
+    receivers:
+      - name: 'null'
+      - name: deadman
+        webhook_configs:
+          - url: "https://hc-ping.com/bdc7a25a-f522-4ccc-b801-2ee226e0c03d"
+    route:
+      routes:
+        - match:
+            alertname: Watchdog
+          receiver: deadman
+          group_wait: 0s
+          group_interval: 1m
+          repeat_interval: 50s
+prometheus-node-exporter:
+  hostRootFsMount:
+    enabled: false

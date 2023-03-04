@@ -12,10 +12,6 @@ resource "helm_release" "kube_prometheus_stack" {
   create_namespace = true
 
   timeout   = 1200
-
-  values = [
-    var.values,
-  ]
-
-  # depends_on = [kind_cluster.default]
+  
+  values = [file("./prometheus/prometheus-values.yaml")]
 }
