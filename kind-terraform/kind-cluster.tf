@@ -52,3 +52,8 @@ module "nginx" {
   source = "./nginx"
   depends_on = [module.prometheus]
 }
+
+module "fluentd" {
+  source = "./fluentd"
+  depends_on = [module.nginx]
+}
