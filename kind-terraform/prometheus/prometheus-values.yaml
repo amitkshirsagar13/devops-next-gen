@@ -5,6 +5,8 @@ global:
   evaluation_interval: 10s
 
 alertmanager:
+  alertmanagerSpec:
+    externalURL: http://alert.localtest.me
   config:
     receivers:
       - name: 'null'
@@ -16,7 +18,7 @@ alertmanager:
       #     - url: "https://nosnch.in/112081fd96"
       - name: "dev-kind-slack"
         slack_configs:
-        - api_url: "https://hooks.slack.com/services/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"
+        - api_url: "https://hooks.slack.com/services/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"
           channel: "#dev-kind"
     route:
       routes:
@@ -61,6 +63,11 @@ alertmanager:
           group_wait: 0s
           group_interval: 5m
           repeat_interval: 5m
+
+prometheusOperator:
+  prometheusSpec:
+    externalUrl: http://prom.localtest.me
+
 
 prometheus-node-exporter:
   hostRootFsMount:
