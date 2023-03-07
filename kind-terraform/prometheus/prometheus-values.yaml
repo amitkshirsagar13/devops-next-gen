@@ -23,9 +23,9 @@ alertmanager:
       - name: Logging-HealthCheck.io
         webhook_configs:
           - url: "https://hc-ping.com/aa9f326c-d958-4b45-82c4-1b107c03762b"
-      - name: DEAD-MAN-SNITCH
-        webhook_configs:
-          - url: "https://nosnch.in/112081fd96"
+      # - name: DEAD-MAN-SNITCH
+      #   webhook_configs:
+      #     - url: "https://nosnch.in/112081fd96"
     route:
       routes:
         - match:
@@ -35,40 +35,40 @@ alertmanager:
           group_interval: 1m
           repeat_interval: 50s
           continue: true
-        - match:
-            alertname: Watchdog-Watchdog
-          receiver: DEAD-MAN-SNITCH
-          group_wait: 0s
-          group_interval: 1m
-          repeat_interval: 50s
+        # - match:
+        #     alertname: Watchdog-Watchdog
+        #   receiver: DEAD-MAN-SNITCH
+        #   group_wait: 0s
+        #   group_interval: 1m
+        #   repeat_interval: 50s
         - match:
             alertname: TargetDown
             namespace: kube-system
           receiver: Kubernetes-HealthCheck.io
           group_wait: 0s
-          group_interval: 1m
-          repeat_interval: 50s
+          group_interval: 5m
+          repeat_interval: 5m
         - match:
             alertname: TargetDown
             namespace: nginx
           receiver: Nginx-HealthCheck.io
           group_wait: 0s
-          group_interval: 1m
-          repeat_interval: 50s
+          group_interval: 5m
+          repeat_interval: 5m
         - match:
             alertname: TargetDown
             namespace: monitoring
           receiver: Monitoring-HealthCheck.io
           group_wait: 0s
-          group_interval: 1m
-          repeat_interval: 50s
+          group_interval: 5m
+          repeat_interval: 5m
         - match:
             alertname: TargetDown
             namespace: logging
           receiver: Logging-HealthCheck.io
           group_wait: 0s
-          group_interval: 1m
-          repeat_interval: 50s
+          group_interval: 5m
+          repeat_interval: 5m
 
 prometheus-node-exporter:
   hostRootFsMount:
