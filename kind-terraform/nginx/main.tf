@@ -2,7 +2,7 @@ resource "helm_release" "ingress_nginx" {
   repository = var.helm_repository
   chart      = "ingress-nginx"
   name       = var.helm_release
-  version   = var.chart_version
+  version    = var.chart_version
 
   namespace = var.helm_namespace
   create_namespace = true

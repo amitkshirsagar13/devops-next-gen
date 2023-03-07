@@ -1,6 +1,6 @@
 variable "helm_namespace" {
   description = "The namespace Helm will install the chart under"
-  default = "monitoring"
+  default = "logging"
 }
 
 variable "helm_release" {

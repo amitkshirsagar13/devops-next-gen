@@ -13,5 +13,5 @@ resource "helm_release" "fluentd" {
 
   timeout   = 1200
   
-  values = [file("./fluentd/fluentd-values.yaml")]
+  values = [file("./fluent/fluentd-values.yaml")]
 }
