@@ -68,6 +68,7 @@ prometheus:
   prometheusSpec:
     web:
       externalUrl: http://prom.localtest.me
+    externalUrl: http://prom.localtest.me
 
 
 prometheus-node-exporter:
