@@ -14,14 +14,14 @@ alertmanager:
       - name: 'null'
       - name: Watchdog-HealthCheck.io
         webhook_configs:
-          - url: "https://hc-ping.com/bdc7a25a-f522-4ccc-b801-2ee226e0c03d"
+          - url: https://hc-ping.com/bdc7a25a-f522-4ccc-b801-2ee226e0c03d
       # - name: DEAD-MAN-SNITCH
       #   webhook_configs:
       #     - url: "https://nosnch.in/112081fd96"
-      - name: "dev-kind-slack"
+      - name: dev-kind-slack
         slack_configs:
-        - api_url: "https://hooks.slack.com/services/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"
-          channel: "#dev-kind"
+        - api_url: https://hooks.slack.com/services/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
+          channel: '#dev-kind'
           title: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] Monitoring Event Notification'
           title_link: 'http://alert.localtest.me/#/alerts'
           text: >-
@@ -95,7 +95,6 @@ alertmanager:
           group_wait: 0s
           group_interval: 1m
           repeat_interval: 50s
-          
         - match:
             alertname: FluentdCloudWatchLogsNotShipping
             namespace: logging

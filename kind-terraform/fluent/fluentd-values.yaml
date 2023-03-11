@@ -49,7 +49,7 @@ metrics:
         description: "{{ $labels.pod }} on {{ $labels.nodename }} is down"
     - alert: FluentdScrapeMissing
       expr: absent(up{job="fluentd"} == 1)
-      for: 15m
+      for: 3m
       labels:
         context: fluentd
         severity: warning
