@@ -54,21 +54,29 @@ alertmanager:
             namespace: kube-system
           receiver: dev-kind-slack
           group_wait: 0s
+          group_interval: 1m
+          repeat_interval: 50s
         - match:
             alertname: TargetDown
             namespace: nginx
           receiver: dev-kind-slack
           group_wait: 0s
+          group_interval: 1m
+          repeat_interval: 50s
         - match:
             alertname: TargetDown
             namespace: monitoring
           receiver: dev-kind-slack
           group_wait: 0s
+          group_interval: 1m
+          repeat_interval: 50s
         - match:
             alertname: TargetDown
             namespace: logging
           receiver: dev-kind-slack
           group_wait: 0s
+          group_interval: 1m
+          repeat_interval: 50s
         - match:
             alertname: FluentdCloudWatchLogsNotShipping
             namespace: logging
