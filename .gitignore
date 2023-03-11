@@ -10,3 +10,4 @@ jenkins-service-account.yaml
 kubernetes-service-account-secret
 vault-root
 vault.txt
+api-values.yaml
