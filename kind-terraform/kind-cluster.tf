@@ -9,14 +9,22 @@ resource "kind_cluster" "default" {
 
     networking {
       api_server_address  = "127.0.0.1"
-      api_server_port     = 55100
+      api_server_port     = 6443
+      pod_subnet          = "10.240.0.0/16"
+      service_subnet      = "10.0.0.0/16"
+      # disable_default_cni = true
     }
     
     node {
       role = "control-plane"
 
       kubeadm_config_patches = [
-        "kind: InitConfiguration\nnodeRegistration:\n  kubeletExtraArgs:\n    node-labels: \"ingress-ready=true\"\n"
+        <<-INTF
+          kind: InitConfiguration
+          nodeRegistration:
+            kubeletExtraArgs:
+              node-labels: "ingress-ready=true"
+        INTF
       ]
       extra_port_mappings {
         container_port = 80
