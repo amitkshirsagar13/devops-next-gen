@@ -20,7 +20,7 @@ alertmanager:
       #     - url: "https://nosnch.in/112081fd96"
       - name: dev-kind-slack
         slack_configs:
-        - api_url: https://hooks.slack.com/services/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
+        - api_url: "${slackApiUrl}"
           channel: '#dev-kind'
           title: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] Monitoring Event Notification'
           title_link: 'http://alert.localtest.me/#/alerts'

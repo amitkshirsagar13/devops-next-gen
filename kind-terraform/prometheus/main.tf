@@ -1,3 +1,7 @@
+locals {
+  config  = yamldecode(file("${path.module}/api-values.yaml"))
+}
+
 resource "helm_release" "kube_prometheus_stack" {
   name = var.helm_release
 
@@ -13,5 +17,11 @@ resource "helm_release" "kube_prometheus_stack" {
 
   timeout   = 1200
   
-  values = [file("./prometheus/prometheus-values.yaml")]
+  # Default Configuration items
+  set {
+    name  = "slackApiUrl"
+    value = local.config.slack.api_url
+  }
+
+  values = [templatefile("./prometheus/prometheus-values.yaml", { slackApiUrl = local.config.slack.api_url })]
 }
