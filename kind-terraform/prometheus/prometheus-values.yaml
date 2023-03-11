@@ -1,3 +1,5 @@
+# https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+
 global:
   # How frequently to scrape targets
   scrape_interval:     10s
@@ -18,8 +20,20 @@ alertmanager:
       #     - url: "https://nosnch.in/112081fd96"
       - name: "dev-kind-slack"
         slack_configs:
-        - api_url: "https://hooks.slack.com/services/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"
+        - api_url: "https://hooks.slack.com/services/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"
           channel: "#dev-kind"
+          title: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] Monitoring Event Notification'
+          title_link: 'http://alert.localtest.me/#/alerts'
+          text: >-
+            {{ range .Alerts }}
+                *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+              *Description:* {{ .Annotations.description }}
+              *Graph:* <{{ .GeneratorURL }}|:chart_with_upwards_trend:> *Runbook:* <{{ .Annotations.runbook }}|:spiral_note_pad:>
+              *Details:*
+              {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+              {{ end }}
+            {{ end }}
+
     route:
       routes:
         - match:
@@ -40,29 +54,28 @@ alertmanager:
             namespace: kube-system
           receiver: dev-kind-slack
           group_wait: 0s
-          group_interval: 5m
-          repeat_interval: 5m
         - match:
             alertname: TargetDown
             namespace: nginx
           receiver: dev-kind-slack
           group_wait: 0s
-          group_interval: 5m
-          repeat_interval: 5m
         - match:
             alertname: TargetDown
             namespace: monitoring
           receiver: dev-kind-slack
           group_wait: 0s
-          group_interval: 5m
-          repeat_interval: 5m
         - match:
             alertname: TargetDown
             namespace: logging
           receiver: dev-kind-slack
           group_wait: 0s
-          group_interval: 5m
-          repeat_interval: 5m
+        - match:
+            alertname: FluentdCloudWatchLogsNotShipping
+            namespace: logging
+          receiver: dev-kind-slack
+          group_wait: 0s
+          group_interval: 1m
+          repeat_interval: 50s
 
 prometheus:
   prometheusSpec:

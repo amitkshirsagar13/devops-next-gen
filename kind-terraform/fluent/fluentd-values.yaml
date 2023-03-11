@@ -56,7 +56,14 @@ metrics:
       annotations:
         summary: "Fluentd Scrape Missing"
         description: "Fluentd instance has disappeared from Prometheus target discovery"
-
+    - alert: FluentdCloudWatchLogsNotShipping
+      expr: fluentd_output_status_emit_records{plugin_id="ignore_fluent_logs",type="null"} > 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: Fluentd is not shipping logs to CloudWatch
+        description: "Fluentd is not sending logs to CloudWatch. Check Fluentd's configuration and logs for errors."
 
 dashboards:
   enabled: "false"
