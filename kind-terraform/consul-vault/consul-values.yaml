@@ -9,3 +9,7 @@ server:
   bootstrapExpect: 1
   disruptionBudget:
     maxUnavailable: 0
+ingress:
+  enabled: true
+  hosts:
+  - consol.localtest.me
