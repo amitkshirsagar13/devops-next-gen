@@ -4,7 +4,7 @@ terraform {
       source  = "kyma-incubator/kind"
       version = "0.0.11"
     }
-
+    
     kubernetes = {
       source  = "hashicorp/kubernetes"
       version = "2.18.1"
@@ -18,6 +18,11 @@ terraform {
     null = {
       source  = "hashicorp/null"
       version = "3.1.0"
+    }
+
+    kubectl = {
+      source = "gavinbunney/kubectl"
+      version = "1.14.0"
     }
   }
 
