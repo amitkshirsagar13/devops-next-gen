@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo-write
+  namespace: echo
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  # http://echo-write.localtest.me/echo1
+  # http://echo-write.localtest.me/echo2
+  - host: echo-write.localtest.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: echo-service-read
+            port:
+              number: 8080
+      - path: /echo1
+        pathType: Prefix
+        backend:
+          service:
+            name: echo-service-write
+            port:
+              number: 8081
+      - path: /echo2
+        pathType: Prefix  
+        backend:
+          service:
+            name: echo-service-write
+            port:
+              number: 8082

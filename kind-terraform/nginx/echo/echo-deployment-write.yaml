@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-write
+  namespace: echo
+spec:
+  selector:
+    matchLabels:
+      app: echo-write
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: echo-write
+        group: api
+    spec:
+      volumes:
+        - name: echo-pv-storage
+          persistentVolumeClaim:
+            claimName: echo-pv-claim
+      hostname: echo-write-1
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+          - "echo1.local"
+          - "echo2.local"
+      containers:
+      - name: echo1
+        image: gcr.io/google_containers/echoserver:1.10
+        ports:
+        - name: echo1
+          containerPort: 8080
+        volumeMounts:
+          - mountPath: "/data/echo1"
+            name: echo-pv-storage
+        resources:
+          limits:
+            cpu: "0.1"
+            memory: "20Mi"
+          requests:
+            cpu: "0.05"
+            memory: "10Mi"
+      - name: echo2
+        image: gcr.io/google_containers/echoserver:1.10
+        ports:
+        - name: echo2
+          containerPort: 8080
+        volumeMounts:
+          - mountPath: "/data/echo2"
+            name: echo-pv-storage
+        resources:
+          limits:
+            cpu: "0.1"
+            memory: "20Mi"
+          requests:
+            cpu: "0.05"
+            memory: "10Mi"

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo-service-read
+  namespace: echo
+spec:
+  ports:
+  - port: 8080
+    targetPort: echo3
+    protocol: TCP
+    name: echo3
+  selector:
+    app: echo-read

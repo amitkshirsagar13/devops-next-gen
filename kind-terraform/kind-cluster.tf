@@ -1,63 +1,57 @@
-resource "kind_cluster" "default" {
-  name            = var.kind_cluster_name
-  kubeconfig_path = pathexpand(var.kind_cluster_config_path)
-  wait_for_ready  = true
+module "kind-dev" {
+  source = "./kind-dev"
+  kind_cluster_name = var.kind_cluster_name
+  kind_cluster_config_path = var.kind_cluster_config_path
+}
 
-  kind_config {
-    kind        = "Cluster"
-    api_version = "kind.x-k8s.io/v1alpha4"
-
-    networking {
-      api_server_address  = "127.0.0.1"
-      api_server_port     = 6443
-      pod_subnet          = "10.240.0.0/16"
-      service_subnet      = "10.0.0.0/16"
-      # disable_default_cni = true
-    }
-    
-    node {
-      role = "control-plane"
-
-      kubeadm_config_patches = [
-        <<-INTF
-          kind: InitConfiguration
-          nodeRegistration:
-            kubeletExtraArgs:
-              node-labels: "ingress-ready=true"
-        INTF
-      ]
-      extra_port_mappings {
-        container_port = 80
-        host_port      = 80
-      }
-      extra_port_mappings {
-        container_port = 443
-        host_port      = 443
-      }
-    }
-
-    node {
-      role = "worker"
-    }
-
-    node {
-      role = "worker"
-    }
-
-    node {
-      role = "worker"
-    }
+resource "null_resource" "kube-config" {
+  provisioner "local-exec" {
+      command = <<EOF
+        pwd
+      EOF
+    interpreter = ["sh", "-c"]
   }
-  
+  depends_on = [module.kind-dev]
+}
+
+resource "time_sleep" "wait_5_seconds" {
+  create_duration = "5s"
+  triggers = {
+    kube_config = var.kind_cluster_config_path
+  }
+  depends_on = [null_resource.kube-config]
+}
+
+provider "kubernetes" {
+  config_path = pathexpand(time_sleep.wait_5_seconds.triggers["kube_config"])
+}
+
+provider "helm" {
+  kubernetes {
+    config_path = pathexpand(time_sleep.wait_5_seconds.triggers["kube_config"])
+  }
+}
+
+provider "kubectl" {
+  load_config_file       = true
+  config_path = pathexpand(time_sleep.wait_5_seconds.triggers["kube_config"])
+}
+
+module "ns" {
+  source = "./ns"
+  namespace = "echo"
+  depends_on = [time_sleep.wait_5_seconds]
 }
 
 module "prometheus" {
   source = "./prometheus"
-  depends_on = [kind_cluster.default]
+  kind_cluster_config_path = var.kind_cluster_config_path
+  depends_on = [time_sleep.wait_5_seconds]
 }
 
 module "nginx" {
   source = "./nginx"
+  kind_cluster_config_path = var.kind_cluster_config_path
   depends_on = [module.prometheus]
 }
 

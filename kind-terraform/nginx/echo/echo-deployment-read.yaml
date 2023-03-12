@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-read
+  namespace: echo
+spec:
+  selector:
+    matchLabels:
+      app: echo-read
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: echo-read
+        group: api
+    spec:
+      volumes:
+        - name: echo-pv-storage
+          persistentVolumeClaim:
+            claimName: echo-pv-claim-read
+      hostname: echo-read
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+          - "echo.local"
+      containers:
+      - name: echo3
+        image: gcr.io/google_containers/echoserver:1.10
+        ports:
+        - name: echo3
+          containerPort: 8080
+        volumeMounts:
+          - mountPath: "/data/echo3"
+            name: echo-pv-storage
+        resources:
+          limits:
+            cpu: "0.1"
+            memory: "15Mi"
+          requests:
+            cpu: "0.05"
+            memory: "1Mi"

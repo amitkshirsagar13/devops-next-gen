@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo-read
+  namespace: echo
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  # http://echo-read.localtest.me/echo
+  - host: echo-read.localtest.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: echo-service-read
+            port:
+              number: 8080
+      - path: /echo
+        pathType: Prefix
+        backend:
+          service:
+            name: echo-service-read
+            port:
+              number: 8080

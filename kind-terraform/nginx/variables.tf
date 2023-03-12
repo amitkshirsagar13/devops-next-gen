@@ -1,3 +1,8 @@
+variable "kind_cluster_config_path" {
+  type        = string
+  description = "kind_cluster_config_path."
+}
+
 variable "helm_namespace" {
   description = "The nginx ingress namespace (it will be created if needed)."
   default     = "nginx"

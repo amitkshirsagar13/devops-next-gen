@@ -109,7 +109,9 @@ prometheus:
       externalUrl: http://prom.localtest.me
     externalUrl: http://prom.localtest.me
 
-
 prometheus-node-exporter:
   hostRootFsMount:
     enabled: false
+
+grafana:
+  adminPassword: admin

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo-service-write
+  namespace: echo
+spec:
+  ports:
+  - port: 8081
+    targetPort: echo1
+    protocol: TCP
+    name: echo1
+  - port: 8082
+    targetPort: echo2
+    protocol: TCP
+    name: echo2
+  selector:
+    app: echo-write
