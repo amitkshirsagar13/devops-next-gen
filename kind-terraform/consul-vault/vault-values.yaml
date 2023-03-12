@@ -1,7 +1,7 @@
 # Vault Helm Chart Value Overrides
 global:
   enabled: true
-  tlsDisable: true
+  tlsDisable: false
 
 injector:
   enabled: true
@@ -65,13 +65,13 @@ server:
       name: tls-server
     - type: secret
       name: tls-ca
-  # dev:
-  #   enabled: true
-  #   # Set VAULT_DEV_ROOT_TOKEN_ID value
-  #   devRootToken: "root"
+  dev:
+    enabled: false
+    # Set VAULT_DEV_ROOT_TOKEN_ID value
+    devRootToken: "root"
 
   standalone:
-    enabled: true
+    enabled: false
     config: |
       ui = true
        
@@ -103,24 +103,24 @@ server:
       }
 
   # Run Vault in "HA" mode.
-  # ha:
-  #   enabled: false
-  #   replicas: 3
-  #   config: |
-  #     ui = true
+  ha:
+    enabled: true
+    replicas: 3
+    config: |
+      ui = true
        
-  #     listener "tcp" {
-  #       tls_disable = false
-  #       address     = "0.0.0.0:8200"
-  #       tls_cert_file = "/vault/userconfig/tls-server/tls.crt"
-  #       tls_key_file = "/vault/userconfig/tls-server/tls.key"
-  #       tls_min_version = "tls12"
-  #     }
+      listener "tcp" {
+        tls_disable = false
+        address     = "0.0.0.0:8200"
+        tls_cert_file = "/vault/userconfig/tls-server/tls.crt"
+        tls_key_file = "/vault/userconfig/tls-server/tls.key"
+        tls_min_version = "tls12"
+      }
 
-  #     storage "consul" {
-  #       path = "vault"
-  #       address = "consul-consul-server:8500"
-  #     }
+      storage "consul" {
+        path = "vault"
+        address = "consul-consul-server:8500"
+      }
 
 # Vault UI
 ui:
