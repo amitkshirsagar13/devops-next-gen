@@ -53,5 +53,5 @@ locals {
 resource "kubectl_manifest" "crds" {
   for_each  = local.crds_dict
   yaml_body = each.value
-  depends_on = [ helm_release.ingress_nginx ]
+  depends_on = [ null_resource.wait_for_ingress_nginx ]
 }
