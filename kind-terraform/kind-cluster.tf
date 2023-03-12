@@ -48,17 +48,18 @@ module "vault" {
   depends_on = [time_sleep.wait_5_seconds]
 }
 
-module "nginx" {
-  source = "./nginx"
+module "prometheus" {
+  source = "./prometheus"
   kind_cluster_config_path = var.kind_cluster_config_path
   depends_on = [time_sleep.wait_5_seconds]
 }
 
-# module "prometheus" {
-#   source = "./prometheus"
-#   kind_cluster_config_path = var.kind_cluster_config_path
-#   depends_on = [time_sleep.wait_5_seconds]
-# }
+module "nginx" {
+  source = "./nginx"
+  kind_cluster_config_path = var.kind_cluster_config_path
+  depends_on = [module.prometheus]
+}
+
 
 # module "fluent" {
 #   source = "./fluent"
