@@ -29,10 +29,10 @@ server:
       pathType: ImplementationSpecific
       paths:
         - /
-    # tls:
-    #   - secretName: vault-tls
-    #     hosts:
-    #     - vault.localtest.me
+    tls:
+      - secretName: vault-tls
+        hosts:
+        - vault.localtest.me
   # These Resource Limits are in line with node requirements in the
   # Vault Reference Architecture for a Small Cluster
   resources:
@@ -55,16 +55,16 @@ server:
 
   # extraEnvironmentVars is a list of extra environment variables to set with the stateful set. These could be
   # used to include variables required for auto-unseal.
-  # extraEnvironmentVars:
-  #   VAULT_CACERT: /vault/userconfig/tls-ca/tls.crt
+  extraEnvironmentVars:
+    VAULT_CACERT: /vault/userconfig/tls-ca/tls.crt
 
   # extraVolumes is a list of extra volumes to mount. These will be exposed
   # to Vault in the path `/vault/userconfig/<name>/`.
-  # extraVolumes:
-  #   - type: secret
-  #     name: tls-server
-  #   - type: secret
-  #     name: tls-ca
+  extraVolumes:
+    - type: secret
+      name: tls-server
+    - type: secret
+      name: tls-ca
   dev:
     enabled: true
 
