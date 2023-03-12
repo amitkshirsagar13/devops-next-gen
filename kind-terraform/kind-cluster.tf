@@ -43,24 +43,24 @@ module "ns" {
   depends_on = [time_sleep.wait_5_seconds]
 }
 
-module "prometheus" {
-  source = "./prometheus"
-  kind_cluster_config_path = var.kind_cluster_config_path
-  depends_on = [time_sleep.wait_5_seconds]
-}
-
-module "nginx" {
-  source = "./nginx"
-  kind_cluster_config_path = var.kind_cluster_config_path
-  depends_on = [module.prometheus]
-}
-
-module "fluent" {
-  source = "./fluent"
-  depends_on = [module.nginx]
-}
-
 module "vault" {
   source = "./consul-vault"
   depends_on = [time_sleep.wait_5_seconds]
 }
+
+# module "prometheus" {
+#   source = "./prometheus"
+#   kind_cluster_config_path = var.kind_cluster_config_path
+#   depends_on = [time_sleep.wait_5_seconds]
+# }
+
+# module "nginx" {
+#   source = "./nginx"
+#   kind_cluster_config_path = var.kind_cluster_config_path
+#   depends_on = [module.prometheus]
+# }
+
+# module "fluent" {
+#   source = "./fluent"
+#   depends_on = [module.nginx]
+# }

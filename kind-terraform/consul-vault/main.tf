@@ -1,6 +1,6 @@
 resource "tls_private_key" "acme_ca" {
   algorithm = "RSA"
-  rsa_bits  = "4096"
+  rsa_bits  = "2048"
 }
 
 resource "local_file" "acme_ca_key" {
@@ -15,15 +15,17 @@ resource "tls_self_signed_cert" "acme_ca" {
   subject {
     common_name         = "DevOps Next GenX CA"
     organization        = "DevOps Next GenX"
-    organizational_unit = "devops"
+    organizational_unit = "DevOps"
+    country             = "US"
+    locality            = "Troy"
+    province            = "Michigan"
+    postal_code         = "48084"
   }
 
-  validity_period_hours = 87659
+  validity_period_hours = 175200
 
   allowed_uses = [
-    "digital_signature",
-    "cert_signing",
-    "crl_signing",
+    "cert_signing", "key_encipherment", "server_auth", "client_auth"
   ]
 }
 
@@ -34,7 +36,7 @@ resource "local_file" "acme_ca_cert" {
 
 resource "tls_private_key" "devops_next_genx" {
   algorithm = "RSA"
-  rsa_bits  = "4096"
+  rsa_bits  = "2048"
 }
 
 resource "local_file" "devops_next_genx_key" {
@@ -45,13 +47,16 @@ resource "local_file" "devops_next_genx_key" {
 resource "tls_cert_request" "devops_next_genx" {
   private_key_pem = "${tls_private_key.devops_next_genx.private_key_pem}"
 
-  dns_names = ["localtest.me"]
+  dns_names = ["devops-next.local","vault","vault.vault.svc.devops-next.localtest.me","vault.vault.svc","localhost","127.0.0.1"]
 
   subject {
-    common_name         = "localtest.me"
+    common_name         = "DevOps Next GenX CA"
     organization        = "DevOps Next GenX"
-    country             = "US"
     organizational_unit = "DevOps"
+    country             = "US"
+    locality            = "Troy"
+    province            = "Michigan"
+    postal_code         = "48084"
   }
 }
 
@@ -60,13 +65,10 @@ resource "tls_locally_signed_cert" "devops_next_genx" {
   ca_private_key_pem = "${tls_private_key.acme_ca.private_key_pem}"
   ca_cert_pem        = "${tls_self_signed_cert.acme_ca.cert_pem}"
 
-  validity_period_hours = 87659
+  validity_period_hours = 175200
 
   allowed_uses = [
-    "digital_signature",
-    "key_encipherment",
-    "server_auth",
-    "client_auth",
+    "cert_signing", "key_encipherment", "server_auth", "client_auth"
   ]
 }
 
@@ -75,17 +77,15 @@ resource "local_file" "devops_next_genx_cert_pem" {
   filename = "${path.module}/certs/devops_next_genx_cert.pem"
 }
 
-resource "null_resource" "wait_for_sed" {
+resource "null_resource" "wait_for_certs" {
   triggers = {
     key = uuid()
+    cert_path = "${path.module}/certs"
   }
 
   provisioner "local-exec" {
     command = <<EOF
-      sed ':a;N;$!ba;s/\n/\\n/g' ${path.module}/certs/acme_ca.pem
-      sed ':a;N;$!ba;s/\n/\\n/g' ${path.module}/certs/acme_ca_private_key.pem
-      sed ':a;N;$!ba;s/\n/\\n/g' ${path.module}/certs/devops_next_genx_cert.pem
-      sed ':a;N;$!ba;s/\n/\\n/g' ${path.module}/certs/devops_next_genx_private_key.pem
+      ls -ltr ${path.module}/certs
     EOF
   }
   depends_on = [
@@ -100,14 +100,11 @@ resource "kubernetes_secret" "devops_next_genx" {
   }
   
   data = {
-    "tls.crt" = "${path.module}/certs/devops_next_genx_cert.pem"
-    "tls.key" = "${path.module}/certs/devops_next_genx_private_key.pem"
+    "tls.crt" = file("${null_resource.wait_for_certs.triggers.cert_path}/devops_next_genx_cert.pem")
+    "tls.key" = file("${null_resource.wait_for_certs.triggers.cert_path}/devops_next_genx_private_key.pem")
   }
 
   type = "kubernetes.io/tls"
-  depends_on = [
-    null_resource.wait_for_sed
-  ]
 }
 
 resource "kubernetes_secret" "acme" {
@@ -117,14 +114,11 @@ resource "kubernetes_secret" "acme" {
   }
   
   data = {
-    "tls.crt" = "${path.module}/certs/acme_ca.pem"
-    "tls.key" = "${path.module}/certs/acme_ca_private_key.pem"
+    "tls.crt" = file("${null_resource.wait_for_certs.triggers.cert_path}/acme_ca.pem")
+    "tls.key" = file("${null_resource.wait_for_certs.triggers.cert_path}/acme_ca_private_key.pem")
   }
 
   type = "kubernetes.io/tls"
-  depends_on = [
-    null_resource.wait_for_sed
-  ]
 }
 
 resource "helm_release" "consul" {

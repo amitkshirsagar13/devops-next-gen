@@ -37,4 +37,5 @@ access the files:
 
 ```
 mv /tmp/* .
+chmod 755 *.pem
 ```

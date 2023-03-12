@@ -30,6 +30,7 @@ kubectl -n vault create secret tls tls-ca \
 kubectl -n vault create secret tls tls-server \
   --cert ./tls/vault.pem \
   --key ./tls/vault-key.pem
+  
 ```
 
 ### Setup Vault

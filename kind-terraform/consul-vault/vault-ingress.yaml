@@ -18,7 +18,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: vault-ui
+            name: vault
             port:
               number: 8200
   # http://consul.localtest.me
