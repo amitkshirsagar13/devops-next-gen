@@ -7,7 +7,7 @@ resource "helm_release" "ingress_nginx" {
   namespace = var.helm_namespace
   create_namespace = true
 
-  values = [file("./nginx/nginx-values.yaml")]
+  values = [file("${path.module}/nginx-values.yaml")]
 }
 
 resource "null_resource" "wait_for_ingress_nginx" {

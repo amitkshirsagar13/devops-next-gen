@@ -13,7 +13,7 @@ resource "helm_release" "fluentd" {
 
   timeout   = 1200
   
-  values = [file("./fluent/fluentd-values.yaml")]
+  values = [file("${path.module}/fluentd-values.yaml")]
 }
 
 locals {

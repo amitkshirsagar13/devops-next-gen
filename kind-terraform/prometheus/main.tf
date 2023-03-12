@@ -24,7 +24,7 @@ resource "helm_release" "kube_prometheus_stack" {
   }
 
   values = [
-    templatefile("./prometheus/prometheus-values.yaml", 
+    templatefile("${path.module}/prometheus-values.yaml", 
     { 
       slackApiUrl = local.config.slack.api_url 
     })

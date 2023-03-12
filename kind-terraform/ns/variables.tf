@@ -1,4 +1,4 @@
-variable "namespace" {
-  type        = string
+variable "namespaces" {
+  type        = list
   description = "The name of the namespace."
 }

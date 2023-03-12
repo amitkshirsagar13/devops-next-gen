@@ -39,7 +39,7 @@ provider "kubectl" {
 
 module "ns" {
   source = "./ns"
-  namespace = "echo"
+  namespaces = ["echo", "vault"]
   depends_on = [time_sleep.wait_5_seconds]
 }
 
@@ -58,4 +58,9 @@ module "nginx" {
 module "fluent" {
   source = "./fluent"
   depends_on = [module.nginx]
+}
+
+module "vault" {
+  source = "./consul-vault"
+  depends_on = [time_sleep.wait_5_seconds]
 }

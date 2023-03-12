@@ -1,5 +1,6 @@
 resource "kubernetes_namespace" "ns" {
+  for_each = toset(var.namespaces)
   metadata {
-    name = var.namespace
+    name = each.key
   }
 }
