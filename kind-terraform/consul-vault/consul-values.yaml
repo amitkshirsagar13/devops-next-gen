@@ -9,7 +9,12 @@ server:
   bootstrapExpect: 1
   disruptionBudget:
     maxUnavailable: 0
-ingress:
-  enabled: true
-  hosts:
-  - consol.localtest.me
+ui:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+    - host: consul.localtest.me
+      pathType: ImplementationSpecific
+      paths:
+        - /
