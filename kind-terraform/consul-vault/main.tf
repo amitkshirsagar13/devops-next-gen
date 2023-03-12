@@ -48,7 +48,7 @@ resource "tls_cert_request" "devops_next_genx" {
   private_key_pem = "${tls_private_key.devops_next_genx.private_key_pem}"
 
   dns_names = ["devops-next.local","vault","vault.vault.svc.devops-next.localtest.me","vault.vault.svc","localhost","127.0.0.1"]
-
+  ip_addresses = ["127.0.0.1"]
   subject {
     common_name         = "DevOps Next GenX CA"
     organization        = "DevOps Next GenX"
