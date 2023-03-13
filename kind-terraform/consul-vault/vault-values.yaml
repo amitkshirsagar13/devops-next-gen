@@ -1,7 +1,8 @@
 # Vault Helm Chart Value Overrides
 global:
   enabled: true
-  tlsDisable: false
+  # ha need below as false
+  tlsDisable: true
 
 injector:
   enabled: true
@@ -29,10 +30,10 @@ server:
       pathType: ImplementationSpecific
       paths:
         - /
-    tls:
-      - secretName: vault-tls
-        hosts:
-        - vault.localtest.me
+    # tls:
+    #   - secretName: vault-tls
+    #     hosts:
+    #     - vault.localtest.me
   # These Resource Limits are in line with node requirements in the
   # Vault Reference Architecture for a Small Cluster
   resources:
@@ -66,7 +67,7 @@ server:
     - type: secret
       name: tls-ca
   dev:
-    enabled: false
+    enabled: true
     # Set VAULT_DEV_ROOT_TOKEN_ID value
     devRootToken: "root"
 
@@ -104,7 +105,7 @@ server:
 
   # Run Vault in "HA" mode.
   ha:
-    enabled: true
+    enabled: false
     replicas: 3
     config: |
       ui = true
