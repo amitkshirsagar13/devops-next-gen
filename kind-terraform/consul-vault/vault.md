@@ -24,12 +24,12 @@ kubectl apply -f ./manifests/consul.yaml
 - Create Secrets
 ```
 kubectl -n vault create secret tls tls-ca \
- --cert ./tls/ca.pem  \
- --key ./tls/ca-key.pem
+ --cert ./tls/acme_ca.pem  \
+ --key ./tls/acme_ca_private_key.pem
 
 kubectl -n vault create secret tls tls-server \
-  --cert ./tls/vault.pem \
-  --key ./tls/vault-key.pem
+  --cert ./tls/devops_next_genx_cert.pem \
+  --key ./tls/devops_next_genx_private_key.pem
   
 ```
 
