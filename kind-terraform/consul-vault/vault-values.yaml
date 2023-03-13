@@ -30,10 +30,10 @@ server:
       pathType: ImplementationSpecific
       paths:
         - /
-    # tls:
-    #   - secretName: vault-tls
-    #     hosts:
-    #     - vault.localtest.me
+    tls:
+      - secretName: tls-server
+        hosts:
+        - vault.localtest.me
   # These Resource Limits are in line with node requirements in the
   # Vault Reference Architecture for a Small Cluster
   resources:
