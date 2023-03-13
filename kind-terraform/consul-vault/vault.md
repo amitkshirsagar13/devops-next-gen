@@ -34,6 +34,7 @@ kubectl -n vault create secret tls tls-server \
 ```
 
 ### Setup Vault
+- https://www.youtube.com/watch?v=2Owo4Ioo9tQ
 
 ```
 https://github.com/marcel-dempers/docker-development-youtube-series/blob/master/hashicorp/vault-2022/vault-values.yaml
