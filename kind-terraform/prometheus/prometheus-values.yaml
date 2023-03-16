@@ -1,5 +1,7 @@
 # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
 
+
+
 global:
   # How frequently to scrape targets
   scrape_interval:     10s
@@ -105,6 +107,15 @@ alertmanager:
 
 prometheus:
   prometheusSpec:
+    enableRemoteWriteReceiver: true
+    remoteWriteDashboards: true
+    remoteWrite:
+    - url: https://metric-api.newrelic.com/prometheus/v1/write?prometheus_server=kind-cluster
+      bearerToken: LICENCE_KEY
+      # write_relabel_configs:
+      # - source_labels: [__name__]
+      #   regex: "alertmanager_(.*)|prometheus_(.*)"
+      #   action: keep
     web:
       externalUrl: http://prom.localtest.me
     externalUrl: http://prom.localtest.me
