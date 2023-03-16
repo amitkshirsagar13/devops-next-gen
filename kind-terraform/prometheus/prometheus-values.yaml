@@ -112,10 +112,10 @@ prometheus:
     remoteWrite:
     - url: https://metric-api.newrelic.com/prometheus/v1/write?prometheus_server=kind-cluster
       bearerToken: LICENCE_KEY
-      # write_relabel_configs:
-      # - source_labels: [__name__]
-      #   regex: "alertmanager_(.*)|prometheus_(.*)"
-      #   action: keep
+      writeRelabelConfigs:
+      - sourceLabels: [__name__]
+        regex: "alertmanager_(.*)|prometheus_(.*)"
+        action: keep
     web:
       externalUrl: http://prom.localtest.me
     externalUrl: http://prom.localtest.me
