@@ -4,7 +4,7 @@ variable "helm_namespace" {
 }
 
 variable "helm_release" {
-  default     = "fluentd"
+  default     = "fluent"
   description = "The name of the Helm release"
 }
 
@@ -30,7 +30,7 @@ variable "helm_repository_username" {
 }
 variable "chart_version" {
   description = "Version of the Helm chart"
-  default = "0.3.9"
+  default = "0.24.0"
 }
 
 variable "values" {

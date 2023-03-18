@@ -11,6 +11,10 @@ kubectl create namespace logging
 helm uninstall --namespace logging fluentd
 helm install --namespace logging fluentd fluent/fluentd -f ./fluentd/fluentd-values.yaml
 helm upgrade --namespace logging fluentd fluent/fluentd -f ./fluentd/fluentd-values.yaml
+
+sudo sysctl -w fs.inotify.max_user_instances=1024
+sudo sysctl -w fs.inotify.max_user_watches=12288
+
 ```
 
 

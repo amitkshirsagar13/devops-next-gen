@@ -5,7 +5,7 @@ resource "helm_release" "fluentd" {
   repository_username = var.helm_repository_username
   repository_password = var.helm_repository_password
 
-  chart     = "fluentd"
+  chart     = "fluent-bit"
   version   = var.chart_version
   
   namespace = var.helm_namespace
@@ -13,7 +13,7 @@ resource "helm_release" "fluentd" {
 
   timeout   = 1200
   
-  values = [file("${path.module}/fluentd-values.yaml")]
+  values = [file("${path.module}/fluentbit-values.yaml")]
 }
 
 locals {

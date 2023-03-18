@@ -61,7 +61,7 @@ module "nginx" {
 }
 
 
-# module "fluent" {
-#   source = "./fluent"
-#   depends_on = [module.nginx]
-# }
+module "fluent" {
+  source = "./fluent"
+  depends_on = [module.nginx]
+}
