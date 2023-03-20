@@ -1,13 +1,7 @@
-variable "kind_cluster_name_devops" {
+variable "kind_cluster_name" {
   type        = string
   description = "The name of the cluster."
   default     = "devops"
-}
-
-variable "kind_cluster_name_dev" {
-  type        = string
-  description = "The name of the cluster."
-  default     = "dev"
 }
 
 variable "kind_cluster_config_path" {

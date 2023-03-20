@@ -8,18 +8,34 @@ resource "helm_release" "ingress_nginx" {
   create_namespace = true
 
   values = [file("${path.module}/nginx-values.yaml")]
+
+  # set {
+  #   name  = "controller.service.type"
+  #   value = "NodePort"
+  # }
+
+  set {
+    name  = "controller.hostPort.ports.http"
+    value = var.node_http_port
+  }
+
+  set {
+    name  = "controller.hostPort.ports.https"
+    value = var.node_https_port
+  }
 }
 
 resource "null_resource" "wait_for_ingress_nginx" {
   triggers = {
     key = uuid()
-    kube_config = var.kind_cluster_config_path
   }
 
   provisioner "local-exec" {
     command = <<EOF
       printf "\nWaiting for the nginx ingress controller...\n"
+      kubectl config get-contexts
       kubectl wait --namespace ${helm_release.ingress_nginx.namespace} \
+        --context=${var.cluster_context} \
         --for=condition=ready pod \
         --selector=app.kubernetes.io/component=controller \
         --timeout=90s
