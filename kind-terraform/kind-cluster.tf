@@ -1,26 +1,3 @@
-module "kind-devops" {
-  source = "./kind-devops"
-  kind_cluster_name = var.kind_cluster_name_devops
-  kind_cluster_config_path = var.kind_cluster_config_path
-}
-
-module "kind-dev" {
-  source = "./kind-dev"
-  kind_cluster_name = var.kind_cluster_name_dev
-  kind_cluster_config_path = var.kind_cluster_config_path
-  depends_on = [module.kind-devops]
-}
-
-resource "null_resource" "kube-config" {
-  provisioner "local-exec" {
-      command = <<EOF
-        pwd
-      EOF
-    interpreter = ["sh", "-c"]
-  }
-  depends_on = [module.kind-dev]
-}
-
 resource "time_sleep" "wait_5_seconds" {
   create_duration = "5s"
   triggers = {
@@ -28,7 +5,26 @@ resource "time_sleep" "wait_5_seconds" {
     kube_context_devops = module.kind-devops.cluster_context
     kube_context_dev    = module.kind-dev.cluster_context
   }
-  depends_on = [null_resource.kube-config]
+  depends_on = [
+    null_resource.kube-config-devops, 
+    null_resource.kube-config-dev
+  ]
+}
+
+module "kind-devops" {
+  source = "./kind-devops"
+  kind_cluster_name = var.kind_cluster_name_devops
+  kind_cluster_config_path = var.kind_cluster_config_path
+}
+
+resource "null_resource" "kube-config-devops" {
+  provisioner "local-exec" {
+      command = <<EOF
+        pwd
+      EOF
+    interpreter = ["sh", "-c"]
+  }
+  depends_on = [module.kind-devops]
 }
 
 provider "kubernetes" {
@@ -52,41 +48,11 @@ provider "kubectl" {
   config_context    = time_sleep.wait_5_seconds.triggers["kube_context_devops"]
 }
 
-provider "kubernetes" {
-  alias             = "dev"
-  config_path       = pathexpand(time_sleep.wait_5_seconds.triggers["kube_config"])
-  config_context    = time_sleep.wait_5_seconds.triggers["kube_context_dev"]
-}
-
-provider "helm" {
-  alias = "dev"
-  kubernetes {
-    config_path     = pathexpand(time_sleep.wait_5_seconds.triggers["kube_config"])
-    config_context  = time_sleep.wait_5_seconds.triggers["kube_context_dev"]
-  }
-}
-
-provider "kubectl" {
-  alias = "dev"
-  load_config_file  = true
-  config_path       = pathexpand(time_sleep.wait_5_seconds.triggers["kube_config"])
-  config_context    = time_sleep.wait_5_seconds.triggers["kube_context_dev"]
-}
-
 module "ns-devops" {
   source = "./ns"
   namespaces = ["echo", "vault"]
   providers = {
     kubernetes = kubernetes.devops
-  }
-  depends_on = [time_sleep.wait_5_seconds]
-}
-
-module "ns-dev" {
-  source = "./ns"
-  namespaces = ["echo"]
-  providers = {
-    kubernetes = kubernetes.dev
   }
   depends_on = [time_sleep.wait_5_seconds]
 }
@@ -111,16 +77,6 @@ module "prometheus-devops" {
   depends_on = [time_sleep.wait_5_seconds]
 }
 
-module "prometheus-dev" {
-  source = "./prometheus"
-  providers = {
-    kubernetes = kubernetes.dev
-    kubectl = kubectl.dev
-    helm = helm.dev
-  }
-  depends_on = [module.prometheus-devops]
-}
-
 module "nginx-devops" {
   source = "./nginx"
   providers = {
@@ -132,6 +88,65 @@ module "nginx-devops" {
   node_http_port  = 32080
   node_https_port = 443
   depends_on = [module.prometheus-devops]
+}
+
+# ---------------------------------------------------------------------
+
+module "kind-dev" {
+  source = "./kind-dev"
+  kind_cluster_name = var.kind_cluster_name_dev
+  kind_cluster_config_path = var.kind_cluster_config_path
+  depends_on = [module.kind-devops]
+}
+
+resource "null_resource" "kube-config-dev" {
+  provisioner "local-exec" {
+      command = <<EOF
+        pwd
+      EOF
+    interpreter = ["sh", "-c"]
+  }
+  depends_on = [module.kind-dev]
+}
+
+provider "kubernetes" {
+  alias             = "dev"
+  config_path       = pathexpand(time_sleep.wait_5_seconds.triggers["kube_config"])
+  config_context    = time_sleep.wait_5_seconds.triggers["kube_context_dev"]
+}
+
+provider "helm" {
+  alias = "dev"
+  kubernetes {
+    config_path     = pathexpand(time_sleep.wait_5_seconds.triggers["kube_config"])
+    config_context  = time_sleep.wait_5_seconds.triggers["kube_context_dev"]
+  }
+}
+
+provider "kubectl" {
+  alias = "dev"
+  load_config_file  = true
+  config_path       = pathexpand(time_sleep.wait_5_seconds.triggers["kube_config"])
+  config_context    = time_sleep.wait_5_seconds.triggers["kube_context_dev"]
+}
+
+module "ns-dev" {
+  source = "./ns"
+  namespaces = ["echo"]
+  providers = {
+    kubernetes = kubernetes.dev
+  }
+  depends_on = [time_sleep.wait_5_seconds]
+}
+
+module "prometheus-dev" {
+  source = "./prometheus"
+  providers = {
+    kubernetes = kubernetes.dev
+    kubectl = kubectl.dev
+    helm = helm.dev
+  }
+  depends_on = [module.ns-dev]
 }
 
 module "nginx-dev" {

@@ -11,7 +11,7 @@ resource "kind_cluster" "default" {
       api_server_address  = "127.0.0.1"
       api_server_port     = 6443
       pod_subnet          = "10.240.0.0/16"
-      service_subnet      = "10.0.0.0/16"
+      service_subnet      = "10.110.0.0/16"
       # disable_default_cni = true
     }
     
@@ -31,10 +31,10 @@ resource "kind_cluster" "default" {
         container_port = 80
         host_port      = 80
       }
-      extra_port_mappings {
-        container_port = 443
-        host_port      = 32443
-      }
+      # extra_port_mappings {
+      #   container_port = 443
+      #   host_port      = 443
+      # }
     }
 
     node {
