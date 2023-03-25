@@ -26,7 +26,7 @@ spec:
         - name: echo-pv-storage
           persistentVolumeClaim:
             claimName: echo-pv-claim
-      hostname: echo-write-1
+      hostname: echo-write
       hostAliases:
         - ip: "127.0.0.1"
           hostnames:
@@ -245,9 +245,9 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: echo-service-read
+            name: echo-service-write
             port:
-              number: 8080
+              number: 8081
       - path: /echo1
         pathType: Prefix
         backend:
