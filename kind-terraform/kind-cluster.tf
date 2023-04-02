@@ -96,15 +96,15 @@ module "vault" {
   depends_on = [module.ns-devops]
 }
 
-# module "prometheus-devops" {
-#   source = "./prometheus"
-#   providers = {
-#     kubernetes = kubernetes.devops
-#     kubectl = kubectl.devops
-#     helm = helm.devops
-#   }
-#   depends_on = [time_sleep.wait_5_seconds]
-# }
+module "prometheus-devops" {
+  source = "./prometheus"
+  providers = {
+    kubernetes = kubernetes.devops
+    kubectl = kubectl.devops
+    helm = helm.devops
+  }
+  depends_on = [module.ns-devops]
+}
 
 # module "nginx-devops" {
 #   source = "./nginx"
