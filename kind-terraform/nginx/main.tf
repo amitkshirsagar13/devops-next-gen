@@ -13,7 +13,6 @@ resource "helm_release" "ingress_nginx" {
 resource "null_resource" "wait_for_ingress_nginx" {
   triggers = {
     key = uuid()
-    kube_config = var.kind_cluster_config_path
   }
 
   provisioner "local-exec" {

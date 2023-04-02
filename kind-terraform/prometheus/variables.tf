@@ -1,8 +1,3 @@
-variable "kind_cluster_config_path" {
-  type        = string
-  description = "kind_cluster_config_path."
-}
-
 variable "helm_namespace" {
   description = "The namespace Helm will install the chart under"
   default = "monitoring"

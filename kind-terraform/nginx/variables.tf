@@ -1,8 +1,3 @@
-variable "kind_cluster_config_path" {
-  type        = string
-  description = "kind_cluster_config_path."
-}
-
 variable "helm_namespace" {
   description = "The nginx ingress namespace (it will be created if needed)."
   default     = "nginx"
@@ -44,4 +39,16 @@ variable "values" {
   default     = ""
   type        = string
   description = "Values to be passed to the Helm chart"
+}
+
+variable "node_http_port" {
+  type        = string
+  description = "Default http port"
+  default     = 80
+}
+
+variable "node_https_port" {
+  type        = string
+  description = "Default https port"
+  default     = 443
 }
