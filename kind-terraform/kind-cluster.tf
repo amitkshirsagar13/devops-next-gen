@@ -1,5 +1,5 @@
-module "kind-dev" {
-  source = "./kind-dev"
+module "kind-clusters" {
+  source = "./kind-clusters"
   kind_cluster_name = var.kind_cluster_name
   kind_cluster_config_path = var.kind_cluster_config_path
 }
@@ -11,7 +11,7 @@ resource "null_resource" "kube-config" {
       EOF
     interpreter = ["sh", "-c"]
   }
-  depends_on = [module.kind-dev]
+  depends_on = [module.kind-clusters]
 }
 
 resource "time_sleep" "wait_5_seconds" {
@@ -60,8 +60,7 @@ module "nginx" {
   depends_on = [module.prometheus]
 }
 
-
-module "fluent" {
-  source = "./fluent"
+module "fluentbit" {
+  source = "./fluentbit"
   depends_on = [module.nginx]
 }

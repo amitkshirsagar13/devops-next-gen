@@ -30,7 +30,7 @@ variable "helm_repository_username" {
 }
 variable "chart_version" {
   description = "Version of the Helm chart"
-  default = "0.24.0"
+  default = "0.25.0"
 }
 
 variable "values" {

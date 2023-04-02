@@ -1,4 +1,4 @@
-resource "helm_release" "fluentd" {
+resource "helm_release" "fluentbit" {
   name = var.helm_release
 
   repository          = var.helm_repository
@@ -25,5 +25,5 @@ locals {
 resource "kubectl_manifest" "crds" {
   for_each  = local.crds_dict
   yaml_body = each.value
-  depends_on = [ helm_release.fluentd ]
+  depends_on = [ helm_release.fluentbit ]
 }
