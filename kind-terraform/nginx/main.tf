@@ -8,6 +8,16 @@ resource "helm_release" "ingress_nginx" {
   create_namespace = true
 
   values = [file("${path.module}/nginx-values.yaml")]
+  
+  set {
+    name  = "controller.hostPort.ports.http"
+    value = var.node_http_port
+  }
+
+  set {
+    name  = "controller.hostPort.ports.https"
+    value = var.node_https_port
+  }
 }
 
 resource "null_resource" "wait_for_ingress_nginx" {

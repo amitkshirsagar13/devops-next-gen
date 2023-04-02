@@ -106,18 +106,17 @@ module "prometheus-devops" {
   depends_on = [module.ns-devops]
 }
 
-# module "nginx-devops" {
-#   source = "./nginx"
-#   providers = {
-#     kubernetes = kubernetes.devops
-#     kubectl = kubectl.devops
-#     helm = helm.devops
-#   }
-#   cluster_context = module.kind-devops.cluster_context
-#   node_http_port  = 32080
-#   node_https_port = 443
-#   depends_on = [module.prometheus-devops]
-# }
+module "nginx-devops" {
+  source = "./nginx"
+  providers = {
+    kubernetes = kubernetes.devops
+    kubectl = kubectl.devops
+    helm = helm.devops
+  }
+  node_http_port  = 32080
+  node_https_port = 443
+  depends_on = [module.prometheus-devops]
+}
 
 # ---------------------------------------------------------------------
 # Dev Cluster Resources
