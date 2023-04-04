@@ -18,7 +18,10 @@ resource "null_resource" "kube-config" {
       EOF
     interpreter = ["sh", "-c"]
   }
-  depends_on = [module.kind-dev]
+  depends_on = [
+    # module.kind-devops,
+    module.kind-dev
+  ]
 }
 
 resource "time_sleep" "wait_5_seconds" {
@@ -38,7 +41,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  alias = "devops"
+  alias             = "devops"
   kubernetes {
     config_path     = pathexpand(time_sleep.wait_5_seconds.triggers["kube_config"])
     config_context  = time_sleep.wait_5_seconds.triggers["kube_context_devops"]
@@ -46,7 +49,7 @@ provider "helm" {
 }
 
 provider "kubectl" {
-  alias = "devops"
+  alias             = "devops"
   load_config_file  = true
   config_path       = pathexpand(time_sleep.wait_5_seconds.triggers["kube_config"])
   config_context    = time_sleep.wait_5_seconds.triggers["kube_context_devops"]
@@ -59,7 +62,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  alias = "dev"
+  alias             = "dev"
   kubernetes {
     config_path     = pathexpand(time_sleep.wait_5_seconds.triggers["kube_config"])
     config_context  = time_sleep.wait_5_seconds.triggers["kube_context_dev"]
@@ -67,7 +70,7 @@ provider "helm" {
 }
 
 provider "kubectl" {
-  alias = "dev"
+  alias             = "dev"
   load_config_file  = true
   config_path       = pathexpand(time_sleep.wait_5_seconds.triggers["kube_config"])
   config_context    = time_sleep.wait_5_seconds.triggers["kube_context_dev"]
