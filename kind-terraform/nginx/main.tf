@@ -30,8 +30,9 @@ resource "null_resource" "wait_for_ingress_nginx" {
       printf "\nWaiting for the nginx ingress controller...\n"
       kubectl wait --namespace ${helm_release.ingress_nginx.namespace} \
         --for=condition=ready pod \
+        --context=kind-${var.cluster_name} \
         --selector=app.kubernetes.io/component=controller \
-        --timeout=90s
+        --timeout=180s
     EOF
   }
 

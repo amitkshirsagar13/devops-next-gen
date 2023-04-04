@@ -1,3 +1,8 @@
+variable "cluster_name" {
+  description = "The cluster name."
+  default     = "devops"
+}
+
 variable "helm_namespace" {
   description = "The nginx ingress namespace (it will be created if needed)."
   default     = "nginx"

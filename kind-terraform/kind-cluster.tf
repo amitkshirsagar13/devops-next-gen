@@ -116,6 +116,7 @@ module "nginx-devops" {
     kubectl = kubectl.devops
     helm = helm.devops
   }
+  cluster_name    = "devops"
   node_http_port  = 32080
   node_https_port = 443
   depends_on = [module.prometheus-devops]
@@ -150,9 +151,13 @@ module "nginx-dev" {
     kubectl = kubectl.dev
     helm = helm.dev
   }
+  cluster_name    = "dev"
   node_http_port  = 80
   node_https_port = 32443
-  depends_on = [module.prometheus-dev]
+  depends_on = [
+    module.prometheus-dev,
+    module.nginx-devops
+  ]
 }
 
 module "fluentbit" {
