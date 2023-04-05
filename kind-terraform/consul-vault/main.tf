@@ -1,3 +1,9 @@
+locals {
+  template_vars = {
+    cluster_name = var.cluster_name
+  }
+}
+
 resource "tls_private_key" "acme_ca" {
   algorithm = "RSA"
   rsa_bits  = "2048"
@@ -145,7 +151,7 @@ resource "helm_release" "vault" {
   namespace = var.helm_namespace
   create_namespace = true
 
-  values = [file("${path.module}/vault-values.yaml")]
+  values = [templatefile("${path.module}/vault-values.yaml", local.template_vars)]
   depends_on = [
     helm_release.consul
   ]
