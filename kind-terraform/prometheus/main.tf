@@ -33,9 +33,9 @@ resource "helm_release" "kube_prometheus_stack" {
 }
 
 locals {
-  crds_split_doc  = split("---", file("${path.module}/prometheus-ingress.yaml"))
-  crds_valid_yaml = [for doc in local.crds_split_doc : doc if try(yamldecode(templatefile(doc, local.template_vars)).metadata.name, "") != ""]
-  crds_dict       = { for doc in toset(local.crds_valid_yaml) : yamldecode(templatefile(doc, local.template_vars)).metadata.name => doc }
+  crds_split_doc  = split("---", templatefile("${path.module}/prometheus-ingress.yaml", local.template_vars))
+  crds_valid_yaml = [for doc in local.crds_split_doc : doc if try(yamldecode(doc).metadata.name, "") != ""]
+  crds_dict       = { for doc in toset(local.crds_valid_yaml) : yamldecode(doc).metadata.name => doc }
 }
 
 resource "kubectl_manifest" "crds" {

@@ -17,9 +17,12 @@ resource "helm_release" "fluentbit" {
 }
 
 locals {
-  crds_split_doc  = split("---", file("${path.module}/fluent-metrics-service.yaml"))
-  crds_valid_yaml = [for doc in local.crds_split_doc : doc if try(yamldecode(templatefile(doc, {cluster_name = var.cluster_name})).metadata.name, "") != ""]
-  crds_dict       = { for doc in toset(local.crds_valid_yaml) : yamldecode(templatefile(doc, {cluster_name = var.cluster_name})).metadata.name => doc }
+  template_vars = {
+    cluster_name = var.cluster_name
+  }
+  crds_split_doc  = split("---", templatefile("${path.module}/fluent-metrics-service.yaml", local.template_vars))
+  crds_valid_yaml = [for doc in local.crds_split_doc : doc if try(yamldecode(doc).metadata.name, "") != ""]
+  crds_dict       = { for doc in toset(local.crds_valid_yaml) : yamldecode(doc).metadata.name => doc }
 }
 
 resource "kubectl_manifest" "crds" {
