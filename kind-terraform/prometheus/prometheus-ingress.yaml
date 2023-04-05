@@ -9,8 +9,8 @@ metadata:
     # nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
-  # http://grafana.localtest.me
-  - host: grafana.localtest.me
+  # http://grafana.${cluster_name}.localtest.me
+  - host: grafana.${cluster_name}.localtest.me
     http:
       paths:
       - path: /
@@ -20,8 +20,8 @@ spec:
             name: kube-prometheus-stack-grafana
             port:
               number: 80
-  # http://prometheus.localtest.me
-  - host: prometheus.localtest.me
+  # http://prometheus.${cluster_name}.localtest.me
+  - host: prometheus.${cluster_name}.localtest.me
     http:
       paths:
       - path: /
@@ -31,8 +31,8 @@ spec:
             name: kube-prometheus-stack-prometheus
             port:
               number: 9090
-  # http://alert.localtest.me
-  - host: alert.localtest.me
+  # http://alert.${cluster_name}.localtest.me
+  - host: alert.${cluster_name}.localtest.me
     http:
       paths:
       - path: /
@@ -42,8 +42,8 @@ spec:
             name: kube-prometheus-stack-alertmanager
             port:
               number: 9093
-  # http://operator.localtest.me
-  - host: operator.localtest.me
+  # http://operator.${cluster_name}.localtest.me
+  - host: operator.${cluster_name}.localtest.me
     http:
       paths:
       - path: /
@@ -53,8 +53,8 @@ spec:
             name: kube-prometheus-stack-operator
             port:
               number: 443
-  # http://kube.localtest.me
-  - host: kube.localtest.me
+  # http://kube.${cluster_name}.localtest.me
+  - host: kube.${cluster_name}.localtest.me
     http:
       paths:
       - path: /
@@ -64,8 +64,8 @@ spec:
             name: kube-prometheus-stack-kube-state-metrics
             port:
               number: 8080
-  # http://prom.localtest.me
-  - host: prom.localtest.me
+  # http://prom.${cluster_name}.localtest.me
+  - host: prom.${cluster_name}.localtest.me
     http:
       paths:
       - path: /

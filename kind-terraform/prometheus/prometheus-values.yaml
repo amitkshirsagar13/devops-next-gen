@@ -10,7 +10,7 @@ global:
 
 alertmanager:
   alertmanagerSpec:
-    externalURL: http://alert.localtest.me
+    externalURL: http://alert.${cluster_name}.localtest.me
   config:
     receivers:
       - name: 'null'
@@ -24,11 +24,11 @@ alertmanager:
         slack_configs:
         - api_url: "${slackApiUrl}"
           channel: '#dev-kind'
-          title: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] Monitoring Event Notification'
-          title_link: 'http://alert.localtest.me/#/alerts'
+          title: '${cluster_name} [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] Monitoring Event Notification'
+          title_link: 'http://alert.${cluster_name}.localtest.me/#/alerts'
           text: >-
             {{ range .Alerts }}
-                *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+                *Alert:* ${cluster_name} {{ .Annotations.summary }} - `{{ .Labels.severity }}`
               *Description:* {{ .Annotations.description }}
               *Graph:* <{{ .GeneratorURL }}|:chart_with_upwards_trend:> *Runbook:* <{{ .Annotations.runbook }}|:spiral_note_pad:>
               *Details:*
@@ -110,15 +110,15 @@ prometheus:
     enableRemoteWriteReceiver: true
     remoteWriteDashboards: true
     remoteWrite:
-    - url: https://metric-api.newrelic.com/prometheus/v1/write?prometheus_server=kind-cluster
+    - url: https://metric-api.newrelic.com/prometheus/v1/write?prometheus_server=kind-.${cluster_name}
       bearerToken: LICENCE_KEY
       writeRelabelConfigs:
       - sourceLabels: [__name__]
         regex: "alertmanager_(.*)|prometheus_(.*)"
         action: keep
     # web:
-    #   externalUrl: http://prom.localtest.me
-    externalUrl: http://prom.localtest.me
+    #   externalUrl: http://prom.${cluster_name}.localtest.me
+    externalUrl: http://prom.${cluster_name}.localtest.me
 
 prometheus-node-exporter:
   hostRootFsMount:

@@ -1,3 +1,8 @@
+variable "cluster_name" {
+  description = "The cluster name."
+  default     = "devops"
+}
+
 variable "helm_namespace" {
   description = "The namespace Helm will install the chart under"
   default = "monitoring"
