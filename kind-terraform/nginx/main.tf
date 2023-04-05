@@ -55,7 +55,10 @@ resource "null_resource" "wait_for_ingress_nginx" {
 # }
 
 locals {
-  crds_split_doc  = split("---", file("${path.module}/echo-service.yaml"))
+  template_vars = {
+    cluster_name = var.cluster_name
+  }
+  crds_split_doc  = split("---", templatefile("${path.module}/echo-service.yaml", local.template_vars))
   crds_valid_yaml = [for doc in local.crds_split_doc : doc if try(yamldecode(doc).metadata.name, "") != ""]
   crds_dict       = { for doc in toset(local.crds_valid_yaml) : yamldecode(doc).metadata.name => doc }
 }

@@ -150,15 +150,3 @@ resource "helm_release" "vault" {
     helm_release.consul
   ]
 }
-
-# locals {
-#   crds_split_doc  = split("---", file("${path.module}/vault-ingress.yaml"))
-#   crds_valid_yaml = [for doc in local.crds_split_doc : doc if try(yamldecode(doc).metadata.name, "") != ""]
-#   crds_dict       = { for doc in toset(local.crds_valid_yaml) : yamldecode(doc).metadata.name => doc }
-# }
-
-# resource "kubectl_manifest" "crds" {
-#   for_each  = local.crds_dict
-#   yaml_body = each.value
-#   depends_on = [ helm_release.vault ]
-# }

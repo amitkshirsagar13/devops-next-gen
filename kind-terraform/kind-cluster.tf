@@ -96,6 +96,7 @@ module "vault" {
     kubectl = kubectl.devops
     helm = helm.devops
   }
+  cluster_name    = "devops"
   depends_on = [module.ns-devops]
 }
 
@@ -106,6 +107,7 @@ module "prometheus-devops" {
     kubectl = kubectl.devops
     helm = helm.devops
   }
+  cluster_name    = "devops"
   depends_on = [module.ns-devops]
 }
 
@@ -141,6 +143,7 @@ module "prometheus-dev" {
     kubectl = kubectl.dev
     helm = helm.dev
   }
+  cluster_name    = "dev"
   depends_on = [module.ns-dev]
 }
 
@@ -167,5 +170,6 @@ module "fluentbit" {
     kubectl = kubectl.dev
     helm = helm.dev
   }
+  cluster_name    = "dev"
   depends_on = [module.nginx-dev]
 }
