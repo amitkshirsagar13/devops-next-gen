@@ -101,7 +101,7 @@ ingress:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /$1
   hosts:
-  - host: fluent-bit.localtest.me
+  - host: fluent-bit.${cluster_name}.localtest.me
     port: 2020
 
 metricsPort: 2020

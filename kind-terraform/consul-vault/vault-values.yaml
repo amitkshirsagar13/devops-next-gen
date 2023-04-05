@@ -26,14 +26,14 @@ server:
     enabled: true
     ingressClassName: nginx
     hosts:
-    - host: vault.localtest.me
+    - host: vault.${cluster_name}.localtest.me
       pathType: ImplementationSpecific
       paths:
         - /
     tls:
       - secretName: tls-server
         hosts:
-        - vault.localtest.me
+        - vault.${cluster_name}.localtest.me
   # These Resource Limits are in line with node requirements in the
   # Vault Reference Architecture for a Small Cluster
   resources:

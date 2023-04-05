@@ -26,7 +26,7 @@ spec:
         - name: echo-pv-storage
           persistentVolumeClaim:
             claimName: echo-pv-claim
-      hostname: echo-write
+      hostname: echo-write.${cluster_name}
       hostAliases:
         - ip: "127.0.0.1"
           hostnames:
@@ -84,7 +84,7 @@ spec:
         - name: echo-pv-storage
           persistentVolumeClaim:
             claimName: echo-pv-claim-read
-      hostname: echo-read
+      hostname: echo-read.${cluster_name}
       hostAliases:
         - ip: "127.0.0.1"
           hostnames:
@@ -206,8 +206,8 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
-  # http://echo-read.localtest.me/echo
-  - host: echo-read.localtest.me
+  # http://echo-read.${cluster_name}.localtest.me/echo
+  - host: echo-read.${cluster_name}.localtest.me
     http:
       paths:
       - path: /
@@ -236,9 +236,9 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
-  # http://echo-write.localtest.me/echo1
-  # http://echo-write.localtest.me/echo2
-  - host: echo-write.localtest.me
+  # http://echo-write.${cluster_name}.localtest.me/echo1
+  # http://echo-write.${cluster_name}.localtest.me/echo2
+  - host: echo-write.${cluster_name}.localtest.me
     http:
       paths:
       - path: /

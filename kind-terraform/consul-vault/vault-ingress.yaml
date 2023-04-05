@@ -10,8 +10,8 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   rules:
-  # http://vault.localtest.me
-  - host: vault.localtest.me
+  # http://vault.${cluster_name}.localtest.me
+  - host: vault.${cluster_name}.localtest.me
     http:
       paths:
       - path: /
@@ -21,8 +21,8 @@ spec:
             name: vault-ui
             port:
               number: 8200
-  # http://consul.localtest.me
-  - host: consul.localtest.me
+  # http://consul.${cluster_name}.localtest.me
+  - host: consul.${cluster_name}.localtest.me
     http:
       paths:
       - path: /
