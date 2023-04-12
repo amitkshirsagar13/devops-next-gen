@@ -1,0 +1,198 @@
+image:
+  repository: quay.io/cortexproject/cortex
+
+# -- Kubernetes cluster DNS domain
+clusterDomain: cluster.local
+
+ingress:
+  enabled: false
+  ingressClass:
+    enabled: false
+    name: "nginx"
+  hosts:
+    - host: cortex.${cluster_name}.localtest.me
+      paths:
+        - /
+
+alertmanager:
+  enabled: true
+  replicas: 1
+
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: "kube-prometheus-stack"
+
+distributor:
+  enabled: true
+  replicas: 2
+
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: "kube-prometheus-stack"
+
+ingester:
+  enabled: true
+  replicas: 3
+
+  serviceMonitor:
+    enabled: false
+    additionalLabels:
+      release: "kube-prometheus-stack"
+
+ruler:
+  enabled: true
+  replicas: 1
+
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: "kube-prometheus-stack"
+
+  # -- Pod Annotations
+  podAnnotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '8080'
+
+querier:
+  enabled: true
+  replicas: 2
+
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: "kube-prometheus-stack"
+
+  # -- Pod Annotations
+  podAnnotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '8080'
+
+query_frontend:
+  enabled: true
+  replicas: 2
+
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: "kube-prometheus-stack"
+
+  # -- Pod Annotations
+  podAnnotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '8080'
+
+query_scheduler:
+  # -- If true, querier and query-frontend will connect to it (requires Cortex v1.6.0+)
+  # https://cortexmetrics.io/docs/operations/scaling-query-frontend/#query-scheduler
+  enabled: true
+  replicas: 2
+
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: "kube-prometheus-stack"
+
+  # -- Pod Annotations
+  podAnnotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: 'http-metrics'
+
+overrides_exporter:
+  # -- https://cortexmetrics.io/docs/guides/overrides-exporter/
+  enabled: false
+
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+
+  # -- Pod Annotations
+  podAnnotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: 'http-metrics'
+
+purger:
+  enabled: true
+  replicas: 1
+
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: "kube-prometheus-stack"
+
+nginx:
+  enabled: true
+  replicas: 2
+  http_listen_port: 80
+  config:
+    dnsResolver: kube-dns.kube-system.svc.cluster.local
+
+store_gateway:
+  enabled: true
+  replicas: 1
+
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: "kube-prometheus-stack"
+
+  # -- Pod Annotations
+  podAnnotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '8080'
+
+compactor:
+  enabled: true
+  replicas: 1
+
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: "kube-prometheus-stack"
+
+  # -- Pod Annotations
+  podAnnotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '8080'
+
+memcached-frontend:
+  # -- Enables support for caching queries in the frontend
+  enabled: true
+  architecture: "high-availability"
+  replicaCount: 2
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+memcached-blocks-index:
+  # -- Enables support for block index caching
+  enabled: true
+  architecture: "high-availability"
+  replicaCount: 2
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+memcached-blocks:
+  # -- Enables support for block caching
+  enabled: true
+  architecture: "high-availability"
+  replicaCount: 2
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+memcached-blocks-metadata:
+  # -- Enables support for block metadata caching
+  enabled: true
+  architecture: "high-availability"
+  replicaCount: 2
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true

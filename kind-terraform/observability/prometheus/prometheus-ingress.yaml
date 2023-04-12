@@ -1,0 +1,77 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: monitoring
+  namespace: monitoring
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  # http://grafana.${cluster_name}.localtest.me
+  - host: grafana.${cluster_name}.localtest.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kube-prometheus-stack-grafana
+            port:
+              number: 80
+  # http://prometheus.${cluster_name}.localtest.me
+  - host: prometheus.${cluster_name}.localtest.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kube-prometheus-stack-prometheus
+            port:
+              number: 9090
+  # http://alert.${cluster_name}.localtest.me
+  - host: alert.${cluster_name}.localtest.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kube-prometheus-stack-alertmanager
+            port:
+              number: 9093
+  # http://operator.${cluster_name}.localtest.me
+  - host: operator.${cluster_name}.localtest.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kube-prometheus-stack-operator
+            port:
+              number: 443
+  # http://kube.${cluster_name}.localtest.me
+  - host: kube.${cluster_name}.localtest.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kube-prometheus-stack-kube-state-metrics
+            port:
+              number: 8080
+  # http://prom.${cluster_name}.localtest.me
+  - host: prom.${cluster_name}.localtest.me
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus-operated
+            port:
+              number: 9090

@@ -116,6 +116,9 @@ prometheus:
       - sourceLabels: [__name__]
         regex: "alertmanager_(.*)|prometheus_(.*)"
         action: keep
+    # - url: "http://localhost:9009/api/prom/push"
+
+
     # web:
     #   externalUrl: http://prom.${cluster_name}.localtest.me
     externalUrl: http://prom.${cluster_name}.localtest.me

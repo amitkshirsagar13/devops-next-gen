@@ -100,8 +100,8 @@ module "vault" {
   depends_on = [module.ns-devops]
 }
 
-module "prometheus-devops" {
-  source = "./prometheus"
+module "cortex-devops" {
+  source = "./observability/cortex"
   providers = {
     kubernetes = kubernetes.devops
     kubectl = kubectl.devops
@@ -121,7 +121,7 @@ module "nginx-devops" {
   cluster_name    = "devops"
   node_http_port  = 32080
   node_https_port = 443
-  depends_on = [module.prometheus-devops]
+  depends_on = [module.cortex-devops]
 }
 
 # ---------------------------------------------------------------------
@@ -137,7 +137,7 @@ module "ns-dev" {
 }
 
 module "prometheus-dev" {
-  source = "./prometheus"
+  source = "./observability/prometheus"
   providers = {
     kubernetes = kubernetes.dev
     kubectl = kubectl.dev
@@ -164,7 +164,7 @@ module "nginx-dev" {
 }
 
 module "fluentbit" {
-  source = "./fluentbit"
+  source = "./observability/fluentbit"
   providers = {
     kubernetes = kubernetes.dev
     kubectl = kubectl.dev
