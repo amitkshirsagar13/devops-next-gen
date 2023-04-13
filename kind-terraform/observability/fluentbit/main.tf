@@ -12,6 +12,23 @@ resource "helm_release" "fluentbit" {
   create_namespace = true
 
   timeout   = 1200
+
+  set {
+    name  = "CLUSTER_NAME"
+    value = var.cluster_name
+  }
+  set {
+    name  = "REGION"
+    value = "us-east-1"
+  }
+  set {
+    name  = "TEAM"
+    value = "cirrus"
+  }
+  set {
+    name  = "LEVEL"
+    value = "dev"
+  }
   
   values = [file("${path.module}/fluentbit-values.yaml")]
 }

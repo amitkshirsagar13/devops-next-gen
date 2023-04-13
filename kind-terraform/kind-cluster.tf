@@ -80,49 +80,49 @@ provider "kubectl" {
 # Devops Cluster Resources
 # ---------------------------------------------------------------------
 
-module "ns-devops" {
-  source = "./ns"
-  namespaces = ["echo", "vault"]
-  providers = {
-    kubernetes = kubernetes.devops
-  }
-  depends_on = [time_sleep.wait_5_seconds]
-}
+# module "ns-devops" {
+#   source = "./ns"
+#   namespaces = ["echo", "vault"]
+#   providers = {
+#     kubernetes = kubernetes.devops
+#   }
+#   depends_on = [time_sleep.wait_5_seconds]
+# }
 
-module "vault" {
-  source = "./consul-vault"
-  providers = {
-    kubernetes = kubernetes.devops
-    kubectl = kubectl.devops
-    helm = helm.devops
-  }
-  cluster_name    = "devops"
-  depends_on = [module.ns-devops]
-}
+# module "vault" {
+#   source = "./consul-vault"
+#   providers = {
+#     kubernetes = kubernetes.devops
+#     kubectl = kubectl.devops
+#     helm = helm.devops
+#   }
+#   cluster_name    = "devops"
+#   depends_on = [module.ns-devops]
+# }
 
-module "cortex-devops" {
-  source = "./observability/cortex"
-  providers = {
-    kubernetes = kubernetes.devops
-    kubectl = kubectl.devops
-    helm = helm.devops
-  }
-  cluster_name    = "devops"
-  depends_on = [module.ns-devops]
-}
+# module "cortex-devops" {
+#   source = "./observability/cortex"
+#   providers = {
+#     kubernetes = kubernetes.devops
+#     kubectl = kubectl.devops
+#     helm = helm.devops
+#   }
+#   cluster_name    = "devops"
+#   depends_on = [module.ns-devops]
+# }
 
-module "nginx-devops" {
-  source = "./nginx"
-  providers = {
-    kubernetes = kubernetes.devops
-    kubectl = kubectl.devops
-    helm = helm.devops
-  }
-  cluster_name    = "devops"
-  node_http_port  = 32080
-  node_https_port = 443
-  depends_on = [module.cortex-devops]
-}
+# module "nginx-devops" {
+#   source = "./nginx"
+#   providers = {
+#     kubernetes = kubernetes.devops
+#     kubectl = kubectl.devops
+#     helm = helm.devops
+#   }
+#   cluster_name    = "devops"
+#   node_http_port  = 32080
+#   node_https_port = 443
+#   depends_on = [module.cortex-devops]
+# }
 
 # ---------------------------------------------------------------------
 # Dev Cluster Resources
@@ -159,7 +159,7 @@ module "nginx-dev" {
   node_https_port = 32443
   depends_on = [
     module.prometheus-dev,
-    module.nginx-devops
+    # module.nginx-devops
   ]
 }
 

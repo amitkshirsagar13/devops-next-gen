@@ -1,61 +1,49 @@
 global:
-  namespaceOverride: logging
+## Override the deployment namespace
+#   namespaceOverride:
 
 image:
-  repository: public.ecr.aws/aws-observability/aws-for-fluent-bit
-  tag: 2.28.4
+  repository: ${ECR_IMAGE_REPO}
+  tag: ${ECR_IMAGE_TAG}
   pullPolicy: IfNotPresent
 
-podSecurityContext: {}
-# runAsUser: 1000
-# runAsGroup: 1000
-# runAsNonRoot: true
-# seccompProfile:
-#   type: RuntimeDefault
-containerSecurityContext: {}
-# allowPrivilegeEscalation: false
-# capabilities: 
-#   drop:
-#   - ALL
+resources:
+  limits:
+    memory: 250Mi
+  requests:
+    cpu: 50m
+    memory: 50Mi
+tolerations: []
+
+# annotations:
+# iam.amazonaws.com/role: arn:aws:iam::123456789012:role/role-for-fluent-bit
 
 rbac:
+  # rbac.pspEnabled, if `true` a restricted pod security policy is created and used
   pspEnabled: false
-service:
-  ## Allow the service to be exposed for monitoring
-  ## https://docs.fluentbit.io/manual/administration/monitoring
-  extraService: |
-    HTTP_Server  On
-    HTTP_Listen  0.0.0.0
-    HTTP_PORT    2020
-  parsersFiles:
-    - /fluent-bit/parsers/parsers.conf
-  # extraParsers: |
-  #   [PARSER]
-  #       Name   logfmt
-  #       Format logfmt
 
 input:
   enabled: true
-  tag: "kube.*"
+  tag: "kubernetes.*"
   path: "/var/log/containers/*.log"
+  # excludePath:
+  #   - "/var/log/containers/cloudwatch-agent*"
+  #   - "/var/log/containers/fluentd*"
+  #   - "/var/log/containers/fluentbit*"
   db: "/var/log/flb_kube.db"
   parser: docker
   dockerMode: "On"
-  memBufLimit: 5MB
-  skipLongLines: "On"
+  memBufLimit: 10MB
+  skipLongLines: "Off"
   refreshInterval: 10
+  readFromHead: true
   # extraInputs: |
+  #   time_format %Y-%m-%dT%H:%M:%S.%NZ
+  #   @type json
   #   ...
 
-# additionalInputs: |
-#   [INPUT]
-#       Name         winlog
-#       Channels     Setup,Windows PowerShell
-#       Interval_Sec 1
-#       DB           winlog.sqlite
-
 filter:
-  enabled: true
+  enabled: false
   match: "kube.*"
   kubeURL: "https://kubernetes.default.svc.cluster.local:443"
   mergeLog: "On"
@@ -75,38 +63,56 @@ filter:
 #    Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
 #    Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
 
-# additionalFilters: |
-#   [FILTER]
-#       Name   grep
-#       Match  *
-#       Exclude log lvl=debug*
+additionalFilters: |
+  [FILTER]
+      Name record_modifier
+      Match *
+      Record clustername ${CLUSTER_NAME}
+      Record region ${REGION}
+      Record team ${TEAM}
+      Record stage ${LEVEL}
+      Remove_key $.kubernetes.pod_id, , , 
+      Remove_key $.kubernetes.master_url
+      Remove_key $.kubernetes.container_image_id
+      Remove_key $.kubernetes.namespace_id
+  [FILTER]
+    Name              kubernetes
+    Match             kube.*
+    Kube_URL          https://kubernetes.default.svc.cluster.local:443
+  [FILTER]
+    Name parser
+    Match *
+    Key_Name log
+    Reserve_Data true
+    Reserve_Time true
+    Parser json
 
-cloudWatch:
-  enabled: false
-  match: "*"
-  region: "us-east-1"
-  logGroupName: "/aws/eks/fluentbit-cloudwatch/logs"
-  logStreamName:
-  logStreamPrefix: "fluentbit-"
-  logKey:
-  logFormat:
-  logRetentionDays:
-  roleArn:
-  autoCreateGroup: true
-  endpoint:
-  credentialsEndpoint: {}
-  # extraOutputs: |
-  #   ...
+# cloudWatch:
+#   enabled: true
+#   match: "*"
+#   region: us-east-1
+#   logGroupName: "/aws/eks/fluentbit-cloudwatch/logs"
+#   logStreamName:
+#   logStreamPrefix: "fluentbit-"
+#   logKey:
+#   logFormat:
+#   logRetentionDays:
+#   roleArn:
+#   autoCreateGroup: true
+#   endpoint:
+#   credentialsEndpoint: {}
+# extraOutputs: |
+#   ...
 
 cloudWatchLogs:
   enabled: true
   match: "*"
-  region: "us-east-1"
-  logGroupName: "/aws/eks/fluentbit-cloudwatch/logs"
-  logGroupTemplate: /aws/eks/fluentbit-cloudwatch/workload/$kubernetes['namespace_name']
+  region: ${REGION}
+  logGroupName: fluentbit-${CLUSTER_NAME}-logs
+  logGroupTemplate: fluentbit-${CLUSTER_NAME}-logs/workload/$kubernetes['namespace_name']
   logStreamName:
   logStreamPrefix: "fluentbit-"
-  logStreamTemplate: $kubernetes['pod_name'].$kubernetes['container_name']
+  # logStreamTemplate: $kubernetes['pod_name'].$kubernetes['container_name']
   logKey:
   logFormat:
   roleArn:
@@ -122,33 +128,11 @@ cloudWatchLogs:
   #  log_format json/emf
   #  worker 1
 
-serviceAccount:
-  create: true
-  annotations: {}
-  name:
-
-resources:
-  limits:
-    memory: 250Mi
-  requests:
-    cpu: 50m
-    memory: 50Mi
-
 ## Assign a PriorityClassName to pods if set
 # priorityClassName: system-node-critical
 
 updateStrategy:
   type: RollingUpdate
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
-annotations:
-  {}
-  # iam.amazonaws.com/role: arn:aws:iam::123456789012:role/role-for-fluent-bit
 
 # Specifies if aws-for-fluent-bit should be started in hostNetwork mode.
 #
@@ -161,13 +145,12 @@ annotations:
 hostNetwork: false
 dnsPolicy: ClusterFirst
 
-env: 
 ## To add extra environment variables to the pods, add as below
 env:
   - name: AWS_REGION
-    value: us-east-1
+    value: ${REGION}
   - name: CLUSTER_NAME
-    value: kind-dev
+    value: ${CLUSTER_NAME}
   - name: HOST_NAME
     valueFrom:
       fieldRef:
@@ -196,11 +179,11 @@ serviceMonitor:
   # When set true then use a ServiceMonitor to configure scraping
   enabled: true
   # Set the namespace the ServiceMonitor should be deployed
-  namespace: monitoring
+  namespace: fluentbit
   # Set how frequently Prometheus should scrape
   # interval: 30s
   # Set path of metrics, e.g /api/v1/metrics/prometheus
-  # telemetryPath: /api/v1/metrics/prometheus
+  telemetryPath: /api/v1/metrics/prometheus
   # Set labels for the ServiceMonitor, use this to define your scrape label for Prometheus Operator
   # labels:
   # Set timeout for scrape
@@ -210,3 +193,5 @@ serviceMonitor:
   # Set of labels to transfer on the Kubernetes Service onto the target.
   # targetLabels: []
   # metricRelabelings: []
+
+

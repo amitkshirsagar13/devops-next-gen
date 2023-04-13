@@ -2,7 +2,8 @@
 kind: DaemonSet
 
 image:
-  repository: cr.fluentbit.io/fluent/fluent-bit
+  repository: fluent/fluent-bit
+  tag: 2.0.11-debug
 
 testFramework:
   enabled: true
@@ -108,6 +109,14 @@ metricsPort: 2020
 
 ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/configuration-file
 config:
+  customParsers: |
+    [PARSER]
+        Name docker
+        Format json
+        Time_Keep Off
+        Time_Key time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+
   service: |
     [SERVICE]
         Daemon Off
@@ -125,16 +134,11 @@ config:
     [INPUT]
         Name tail
         Path /var/log/containers/*.log
-        multiline.parser docker, cri
+        Exclude_Path   /var/log/containers/fluent*
+        multiline.parser docker
         Tag kube.*
         Mem_Buf_Limit 5MB
         Skip_Long_Lines On
-
-    [INPUT]
-        Name systemd
-        Tag host.*
-        Systemd_Filter _SYSTEMD_UNIT=kubelet.service
-        Read_From_Tail On
 
   ## https://docs.fluentbit.io/manual/pipeline/filters
   filters: |
@@ -142,32 +146,35 @@ config:
         Name kubernetes
         Match kube.*
         Merge_Log On
-        Keep_Log Off
-        K8S-Logging.Parser On
+        Kube_Tag_Prefix     kube.var.log.containers.
+        Merge_Log_Key       log_processed
+        K8S-Logging.Parser  On
         K8S-Logging.Exclude On
+    [FILTER]
+        Name record_modifier
+        Match *
+        Record clustername clusterName
+        Record region region
+        Record team team
+        Record stage level
+        Remove_key $.kubernetes.pod_id
+        Remove_key $.kubernetes.master_url
+        Remove_key $.kubernetes.container_image_id
+        Remove_key $.kubernetes.namespace_id
+    [FILTER]
+        Name parser
+        Match *
+        Key_Name log
+        Reserve_Data true
+        Parser json
 
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
     [OUTPUT]
-        Name es
-        Match kube.*
-        Host elasticsearch-master
-        Logstash_Format On
-        Retry_Limit False
-
+        Name stdout
+        Match *
     [OUTPUT]
-        Name es
-        Match host.*
-        Host elasticsearch-master
-        Logstash_Format On
-        Logstash_Prefix node
-        Retry_Limit False
+        Name file
+        Match *
+        Path /var/log/containers
 
-  ## https://docs.fluentbit.io/manual/pipeline/parsers
-  customParsers: |
-    [PARSER]
-        Name docker_no_time
-        Format json
-        Time_Keep Off
-        Time_Key time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L
