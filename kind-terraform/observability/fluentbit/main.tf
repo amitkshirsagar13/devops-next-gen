@@ -13,24 +13,13 @@ resource "helm_release" "fluentbit" {
 
   timeout   = 1200
 
-  set {
-    name  = "CLUSTER_NAME"
-    value = var.cluster_name
-  }
-  set {
-    name  = "REGION"
-    value = "us-east-1"
-  }
-  set {
-    name  = "TEAM"
-    value = "cirrus"
-  }
-  set {
-    name  = "LEVEL"
-    value = "dev"
-  }
-  
-  values = [file("${path.module}/fluentbit-values.yaml")]
+  values = [templatefile("${path.module}/fluentbit-values.yaml", {
+      CLUSTER_NAME = "${var.cluster_name}",
+      REGION       = "${var.region}",
+      TEAM         = "${var.team}",
+      LEVEL        = "${var.level}"
+    })
+  ]
 }
 
 locals {

@@ -170,6 +170,9 @@ module "fluentbit" {
     kubectl = kubectl.dev
     helm = helm.dev
   }
-  cluster_name    = "dev"
+  cluster_name    = "kind-dev"
+  region    = "us-east-1"
+  team    = "avengers"
+  level    = "dev"
   depends_on = [module.nginx-dev]
 }

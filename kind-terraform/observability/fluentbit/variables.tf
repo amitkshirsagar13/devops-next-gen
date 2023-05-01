@@ -43,3 +43,18 @@ variable "values" {
   type        = string
   description = "Values to be passed to the Helm chart"
 }
+
+variable "region" {
+  description = "The region name."
+  default     = "eu-east-1"
+}
+
+variable "team" {
+  description = "The team name."
+  default     = "avengers"
+}
+
+variable "level" {
+  description = "The level name."
+  default     = "dev"
+}

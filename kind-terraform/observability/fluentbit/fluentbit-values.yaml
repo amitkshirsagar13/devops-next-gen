@@ -6,7 +6,7 @@ image:
   tag: 2.0.11-debug
 
 testFramework:
-  enabled: true
+  enabled: false
   image:
     repository: busybox
     pullPolicy: Always
@@ -102,7 +102,7 @@ ingress:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /$1
   hosts:
-  - host: fluent-bit.${cluster_name}.localtest.me
+  - host: fluent-bit.${CLUSTER_NAME}.localtest.me
     port: 2020
 
 metricsPort: 2020
@@ -134,7 +134,7 @@ config:
     [INPUT]
         Name tail
         Path /var/log/containers/*.log
-        Exclude_Path   /var/log/containers/fluent*
+        Exclude_Path   /var/log/containers/fluent*,/var/log/containers/kube.var.log*
         multiline.parser docker
         Tag kube.*
         Mem_Buf_Limit 5MB
@@ -150,17 +150,20 @@ config:
         Merge_Log_Key       log_processed
         K8S-Logging.Parser  On
         K8S-Logging.Exclude On
+        Annotations On
+        Labels On
     [FILTER]
         Name record_modifier
         Match *
-        Record clustername clusterName
-        Record region region
-        Record team team
-        Record stage level
-        Remove_key $.kubernetes.pod_id
-        Remove_key $.kubernetes.master_url
-        Remove_key $.kubernetes.container_image_id
-        Remove_key $.kubernetes.namespace_id
+        Record clustername ${CLUSTER_NAME}
+        Record region ${REGION}
+        Record team ${TEAM}
+        Record stage ${LEVEL}
+        Remove_key $["kubernetes"]["pod_id"]
+        Remove_key $["kubernetes"]["master_url"]
+        Remove_key $["kubernetes"]["container_image_id"]
+        Remove_key $["kubernetes"]["namespace_id"]
+        Remove_key $["kubernetes"]["container_hash"]
     [FILTER]
         Name parser
         Match *
@@ -171,10 +174,9 @@ config:
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
     [OUTPUT]
-        Name stdout
-        Match *
-    [OUTPUT]
-        Name file
-        Match *
-        Path /var/log/containers
-
+        Name cloudwatch_logs
+        Match   *
+        region us-east-1
+        log_group_name    test-fluentbit-${CLUSTER_NAME}-logs
+        log_stream_name   $kubernetes['pod_name'].$kubernetes['container_name']
+        auto_create_group true
