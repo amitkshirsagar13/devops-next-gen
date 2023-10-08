@@ -10,6 +10,6 @@ sleep 10
 kubectl apply -f kubernetes-ingress.yaml
 
 printf "\nYou should see 'echo' as a reponse below (if you do the ingress is working):\n"
-curl http://echo-read.localtest.me/echo
-curl http://echo-write.localtest.me/echo1
-curl http://echo-write.localtest.me/echo2
+curl http://echo-read.dev.localtest.me/echo
+curl http://echo-write.dev.localtest.me/echo1
+curl http://echo-write.dev.localtest.me/echo2
