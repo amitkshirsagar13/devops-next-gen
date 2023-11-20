@@ -3,7 +3,7 @@ output "helm_namespace" {
 }
 
 output "status" {
-  value = helm_release.kube_prometheus_stack.id
+  value = helm_release.cortext.id
 }
 
 output "helm_release" {
