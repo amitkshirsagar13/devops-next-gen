@@ -14,7 +14,8 @@ recreate:
     ./dev.sh
 
 destroy cluster:
-    kind delete  cluster -n dev
+    kind delete cluster -n dev
+    kind delete cluster -n devops
 
 build-jenkins:
     docker build -t amitkshirsagar13/devops-jenkins:2.391 ./jenkins
