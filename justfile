@@ -1,5 +1,4 @@
 defaultCluster := 'dev'
-defaultMessage := 'default commit'
 
 default:
     @just --list --unsorted
