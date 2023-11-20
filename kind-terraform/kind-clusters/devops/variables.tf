@@ -1,7 +1,7 @@
 variable "kind_cluster_name" {
   type        = string
   description = "The name of the cluster."
-  default     = "dev"
+  default     = "devops"
 }
 
 variable "kind_cluster_config_path" {
