@@ -28,7 +28,7 @@ reset-jenkins:
     kubectl delete -f ./jenkins/jenkins-service.yaml
     kubectl create -f ./jenkins/jenkins-service.yaml
 
-commit message=defaultMessage:
+commit message='default commit':
     git add . && git commit -m "{{message}}" && git push
 
 start-vault:
