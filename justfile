@@ -1,3 +1,6 @@
+defaultCluster := 'dev'
+defaultMessage := 'default commit'
+
 default:
     @just --list --unsorted
 
@@ -25,7 +28,7 @@ reset-jenkins:
     kubectl delete -f ./jenkins/jenkins-service.yaml
     kubectl create -f ./jenkins/jenkins-service.yaml
 
-gpush message:
+commit message=defaultMessage:
     git add . && git commit -m "{{message}}" && git push
 
 start-vault:
@@ -34,32 +37,32 @@ start-vault:
     mkdir -p vault/volumes/logs
     ./vault/setup-vault.sh
 
-kubeA:
-    kubectl get pods,svc,ingress -A
+kubeA clusterName=defaultCluster:
+    kubectl get pods,svc,ingress -A --context=kind-{{clusterName}}
 
-kube ns:
-    kubectl get pods,svc,ingress -n {{ns}}
+kube ns clusterName=defaultCluster:
+    kubectl get pods,svc,ingress -n {{ns}} --context=kind-{{clusterName}}
 
-pgA:
-    kubectl get pods -A
+pgA clusterName=defaultCluster:
+    kubectl get pods -A --context=kind-{{clusterName}}
 
-pg ns:
-    kubectl get pods -n {{ns}}
+pg ns clusterName=defaultCluster:
+    kubectl get pods -n {{ns}} --context=kind-{{clusterName}}
 
-pd ns pod:
-    kubectl describe pods -n {{ns}} {{pod}}
+pd ns pod clusterName=defaultCluster:
+    kubectl describe pods -n {{ns}} {{pod}} --context=kind-{{clusterName}}
 
-k type ns:
-    kubectl get {{type}} -n {{ns}}
+k type ns clusterName=defaultCluster:
+    kubectl get {{type}} -n {{ns}} --context=kind-{{clusterName}}
 
-kd type ns item:
-    kubectl describe {{type}} -n {{ns}} {{item}}
+kd type ns item clusterName=defaultCluster:
+    kubectl describe {{type}} -n {{ns}} {{item}} --context=kind-{{clusterName}}
 
-logs ns pod:
-    kubectl logs -n {{ns}} {{pod}} | tee pod.log
+logs ns pod clusterName=defaultCluster:
+    kubectl logs -n {{ns}} {{pod}} --context=kind-{{clusterName}} | tee pod.log
 
-ksh ns pod:
-    kubectl exec -n {{ns}} -it {{pod}} -- /bin/sh
+ksh ns pod clusterName=defaultCluster:
+    kubectl exec -n {{ns}} -it {{pod}} --context=kind-{{clusterName}} -- /bin/sh
 
-kbash ns pod:
-    kubectl exec -n {{ns}} -it {{pod}} -- /bin/bash
+kbash ns pod clusterName=defaultCluster:
+    kubectl exec -n {{ns}} -it {{pod}} --context=kind-{{clusterName}} -- /bin/bash
