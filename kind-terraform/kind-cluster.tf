@@ -111,6 +111,7 @@ module "prometheus-devops" {
   depends_on   = [module.ns-devops]
 }
 
+# TODO Make cortex work
 # module "cortex-devops" {
 #   source = "./observability/cortex"
 #   providers = {

@@ -3,7 +3,7 @@ output "helm_namespace" {
 }
 
 output "status" {
-  value = helm_release.cortext.id
+  value = helm_release.cortex.id
 }
 
 output "helm_release" {

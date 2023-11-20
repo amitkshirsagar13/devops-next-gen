@@ -6,7 +6,7 @@ locals {
   }
 }
 
-resource "helm_release" "cortext" {
+resource "helm_release" "cortex" {
   name = var.helm_release
 
   repository          = var.helm_repository
@@ -41,5 +41,5 @@ locals {
 resource "kubectl_manifest" "crds" {
   for_each   = local.crds_dict
   yaml_body  = each.value
-  depends_on = [helm_release.cortext]
+  depends_on = [helm_release.cortex]
 }
