@@ -111,7 +111,7 @@ module "prometheus-devops" {
   depends_on   = [module.ns-devops]
 }
 
-# TODO Make cortex work
+# # TODO Make cortex work
 # module "cortex-devops" {
 #   source = "./observability/cortex"
 #   providers = {
@@ -120,7 +120,7 @@ module "prometheus-devops" {
 #     helm       = helm.devops
 #   }
 #   cluster_name = "devops"
-#   depends_on   = [module.prometheus-devops]
+#   depends_on   = [module.ns-devops]
 # }
 
 module "nginx-devops" {
