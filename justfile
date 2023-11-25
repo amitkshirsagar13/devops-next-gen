@@ -3,6 +3,14 @@ defaultCluster := 'dev'
 default:
     @just --list --unsorted
 
+du:
+    du -h /var/lib/docker
+
+clean:
+    docker volume prune -f
+    docker container prune -f
+    docker image prune
+
 create:
     #!/usr/bin/env bash
     cd kind-terraform
