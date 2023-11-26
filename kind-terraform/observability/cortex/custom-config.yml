@@ -22,15 +22,15 @@ config:
     s3:
       bucket_name: cortex-k8s-demo
       region: us-east-1
-      access_key_id: AKIAVIM7ULIM7YKE5X4F
-      secret_access_key: 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
+      access_key_id: XXXXXXXXXXXXXXXXXX
+      secret_access_key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       endpoint: s3.us-east-1.amazonaws.com
   alertmanager_storage:
     s3:
       bucket_name: cortex-k8s-demo
       region: us-east-1
-      access_key_id: AKIAVIM7ULIM7YKE5X4F
-      secret_access_key: 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
+      access_key_id: XXXXXXXXXXXXXXXXXX
+      secret_access_key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       endpoint: s3.us-east-1.amazonaws.com
   storage:
     engine: blocks
@@ -39,8 +39,8 @@ config:
     s3:
       bucket_name: cortex-k8s-demo
       region: us-east-1
-      access_key_id: AKIAVIM7ULIM7YKE5X4F
-      secret_access_key: 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
+      access_key_id: XXXXXXXXXXXXXXXXXX
+      secret_access_key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       endpoint: s3.us-east-1.amazonaws.com
     bucket_store:
       sync_dir: "/data"
