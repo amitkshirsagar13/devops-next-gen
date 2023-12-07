@@ -14,12 +14,16 @@ clean:
 create:
     #!/usr/bin/env bash
     cd kind-terraform
+    rm -r .terraform*
+    rm -r terraform*
     terraform init
     ./dev.sh
 
 recreate:
     #!/usr/bin/env bash
     cd kind-terraform
+    rm -r .terraform*
+    rm -r terraform*
     terraform destroy -auto-approve
     terraform init
     ./dev.sh
@@ -28,6 +32,8 @@ t-destroy:
     #!/usr/bin/env bash
     cd kind-terraform
     terraform destroy -auto-approve
+    rm -r .terraform*
+    rm -r terraform*
 
 destroy cluster:
     kind delete  -n {{cluster}}
