@@ -5,7 +5,7 @@ image:
 clusterDomain: cluster.local
 
 ingress:
-  enabled: false
+  enabled: true
   ingressClass:
     enabled: false
     name: "nginx"
@@ -13,6 +13,12 @@ ingress:
     - host: cortex.${cluster_name}.localtest.me
       paths:
         - /
+
+serviceAccount:
+  create: true
+  name:
+  annotations: {}
+  automountServiceAccountToken: true
 
 alertmanager:
   enabled: true
@@ -52,8 +58,8 @@ ruler:
 
   # -- Pod Annotations
   podAnnotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/port: '8080'
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
 
 querier:
   enabled: true
@@ -66,8 +72,8 @@ querier:
 
   # -- Pod Annotations
   podAnnotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/port: '8080'
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
 
 query_frontend:
   enabled: true
@@ -80,8 +86,8 @@ query_frontend:
 
   # -- Pod Annotations
   podAnnotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/port: '8080'
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
 
 query_scheduler:
   # -- If true, querier and query-frontend will connect to it (requires Cortex v1.6.0+)
@@ -96,8 +102,8 @@ query_scheduler:
 
   # -- Pod Annotations
   podAnnotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/port: 'http-metrics'
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "http-metrics"
 
 overrides_exporter:
   # -- https://cortexmetrics.io/docs/guides/overrides-exporter/
@@ -109,8 +115,8 @@ overrides_exporter:
 
   # -- Pod Annotations
   podAnnotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/port: 'http-metrics'
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "http-metrics"
 
 purger:
   enabled: true
@@ -139,8 +145,8 @@ store_gateway:
 
   # -- Pod Annotations
   podAnnotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/port: '8080'
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
 
 compactor:
   enabled: true
@@ -153,8 +159,8 @@ compactor:
 
   # -- Pod Annotations
   podAnnotations:
-    prometheus.io/scrape: 'true'
-    prometheus.io/port: '8080'
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
 
 memcached-frontend:
   # -- Enables support for caching queries in the frontend
@@ -196,3 +202,23 @@ memcached-blocks-metadata:
     enabled: true
     serviceMonitor:
       enabled: true
+
+config:
+  blocks_storage:
+    backend: s3
+    s3:
+      bucket_name: cortex-k8s-demo
+      endpoint: s3.us-east-1.amazonaws.com
+      access_key_id:
+      secret_access_key:
+      insecure: true
+      # bucket_name: "${BUCKET}"
+      # endpoint: s3.us-east-1.amazonaws.com
+      # access_key_id: "${API_KEY}"
+      # secret_access_key: "${API_SECRET}"
+      # insecure: true
+    # backend: filesystem
+    # filesystem:
+    #   # Local filesystem storage directory.
+    #   # CLI flag: -blocks-storage.filesystem.dir
+    #   [dir: <string> | default = ""]

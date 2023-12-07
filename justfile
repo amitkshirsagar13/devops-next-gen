@@ -24,6 +24,11 @@ recreate:
     terraform init
     ./dev.sh
 
+t-destroy:
+    #!/usr/bin/env bash
+    cd kind-terraform
+    terraform destroy -auto-approve
+
 destroy cluster:
     kind delete  -n {{cluster}}
 

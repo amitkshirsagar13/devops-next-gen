@@ -2,6 +2,9 @@ locals {
   config = yamldecode(file("${path.module}/api-values.yaml"))
   template_vars = {
     slackApiUrl  = local.config.slack.api_url
+    BUCKET       = local.config.backend.s3.BUCKET
+    API_KEY      = local.config.backend.s3.API_KEY
+    API_SECRET   = local.config.backend.s3.API_SECRET
     cluster_name = var.cluster_name
   }
 }
