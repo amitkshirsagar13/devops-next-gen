@@ -24,7 +24,7 @@ resource "kind_cluster" "cluster" {
           nodeRegistration:
             kubeletExtraArgs:
               node-labels: "ingress-ready=true"
-              system-reserved: memory=16Gi,cpu=6
+              system-reserved: memory=8Gi,cpu=2
         INTF
       ]
       extra_port_mappings {
